@@ -1,0 +1,40 @@
+{# Base twig template #}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        {% block page_specific_meta %}
+        {% endblock %}
+        <title>{% block page_title %}{% endblock %}</title>
+        <link rel="stylesheet" href="../vendor/twbs/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="../vendor/twbs/bootstrap/dist/css/bootstrap-theme.min.css" />
+        {% block page_specific_includes_header %}
+        {% endblock %}
+    </head>
+    <body>
+        <div class="container">
+            {% block page_header %}
+                <div class="page-header">
+                    <h1>Videomarketing admin panel</h1>
+                </div>
+            {% endblock %}
+            
+            {% block page_navigation %}
+            {% endblock %}
+            
+            {% block page_content %}
+            {% endblock %}
+            
+            {% block page_footer %}
+                <div class="footer">
+                    Copyright &copy; Danijel Sokač 2016
+                </div>
+            {% endblock %}
+        </div>
+        <script src="../vendor/components/jquery/jquery.min.js"></script>
+        <script src="../vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="../web_files/js/general.js"></script>
+        {% block page_specific_includes_footer %}
+        {% endblock %}
+    </body>
+</html>
