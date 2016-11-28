@@ -12,20 +12,21 @@ $telecommOperator = $_GET["telecomm"];
 
 $success = 1;
 $message = "Telecommunication and user were connected successfully";
-$u = new User(intval($id));
+$u = new User(intval($user));
 if($u->isUserDeleted()){
     $success = 0;
     $message = "Deleted user cannot connect to telecomm operator.";
 } else if($u->isUserBlocked()){
     $success = 0;
     $message = "Blocked user cannot connect to telecomm operator.";
-}  else if(!$u->isUserDeactivated()){
+}  else if($u->isUserDeactivated()){
     $success = 0;
     $message = "Deactivated user cannot connect to telecomm operator.";
 } else {
     $tu = new TelecommUser();
     $tu->setUser($u->getId());
-    $tu->setTelecommOperator($telecommOperator);
+    $tu->setTelecommOperatorUsingCode($telecommOperator);
+    //check if same telecommoperator exists.
     $output = $tu->create();
     
     if($output == false){

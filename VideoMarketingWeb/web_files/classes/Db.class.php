@@ -14,9 +14,9 @@
  */
 class Db {
     
-    const DBNAME = "videomarketing";
-    const DBUSER = "videomark_user";
-    const DBPASSWORD = "videomarkuser";
+    const DBNAME = "u832073829_baza";
+    const DBUSER = "u832073829_user";
+    const DBPASSWORD = "KsJmCMLB8g";
     const DBSERVER = "localhost";
     
     /**

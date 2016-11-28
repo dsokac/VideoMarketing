@@ -6,7 +6,7 @@ include_once "../../web_files/classes/TelecommUser.class.php";
 $user = $_GET["user_id"];
 $telecommOperator = $_GET["telecomm_operator"];
 
-$tcUser = new TelecommUser($user, $telecommOperator);
+$tcUser = TelecommUser::getTelecommUserByTelecommCode($user, $telecommOperator);
 
 $json = array(
     "status" => 100,

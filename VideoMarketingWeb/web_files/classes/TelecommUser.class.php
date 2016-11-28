@@ -258,15 +258,21 @@ class TelecommUser extends AbstractModel {
         } 
         $aTelecomm =$stmt->fetch()[$this->tTelecommOperator];
         $query = Db::makeQuery("update", array($this->t), array($this->tActivated), "{$this->tUser} = {$this->user->getId()} and {$this->tTelecommOperator} = {$aTelecomm}", array(0));
-        var_dump($query);
         $stmt = $link->prepare($query);
         $result = $stmt->execute();
         if($stmt->rowCount() == 0){
             $link->rollBack();
             return false;
         }
+        $query = Db::makeQuery("select", array("telecomm_operators"),array("id"),"code = '$newTelecommOperator' and deleted = 0");
+        $stmt = $link->prepare($query);
+        $result = $stmt->execute();
+        if($stmt->rowCount() < 1){
+          $link->rollBack();
+          return false;
+        }
+        $newTelecommOperator = $stmt->fetch()["id"];
         $query = Db::makeQuery("update", array($this->t), array($this->tActivated, $this->tActivatedAt), "{$this->tUser} = {$this->user->getId()} and {$this->tTelecommOperator} = {$newTelecommOperator}", array(1, date(MyGlobal::$timeFormatDB)));
-        
         $stmt = $link->prepare($query);
         $result = $stmt->execute();
         if($stmt->rowCount() == 0){
@@ -282,5 +288,21 @@ class TelecommUser extends AbstractModel {
         $result = Db::query($query);
         return count($result) == 1;
     }
+    
+    //TODO documentation
+    public static function getTelecommUserByTelecommCode($user, $code){
+       $query = Db::makeQuery("select", array("telecomm_operators"), array("id"), "code = '{$code}'");
+       $result = Db::query($query);
+       $id = $result[0]["id"];
+       return new TelecommUser($user, $id);
+     }
+     
+     //TODO documentation
+     public function setTelecommOperatorUsingCode($code){
+       $query = Db::makeQuery("select", array("telecomm_operators"), array("id"), "code = '{$code}'");
+       $result = Db::query($query);
+       $id = $result[0]["id"];
+       $this->setTelecommOperator(intval($id));
+     }
     
 }

@@ -1,15 +1,13 @@
 <?php 
     include_once "header.php";  
     
-    include_once "../classes/PinnedVideo.class.php";
-    include_once "../classes/Video.class.php";
-    include_once "../classes/VideoTag.class.php";
-    include_once "../classes/Tag.class.php";
+    include_once "../classes/TelecommUser.class.php";
+    $user = 1;
+    $code = 21901;
+    $tu = TelecommUser::getTelecommUserByTelecommCode($user, $code);
+    var_dump($tu);
     
-    $v = new Video(1);
-    
-    
-    
+    echo "<br/><br/>";
       
     $template = $twig->loadTemplate('index.twig');
     echo $template->render(array());
