@@ -26,13 +26,16 @@ if($u->isUserDeleted()){
     $tu = new TelecommUser();
     $tu->setUser($u->getId());
     $tu->setTelecommOperatorUsingCode($telecommOperator);
-    //check if same telecommoperator exists.
-    $output = $tu->create();
-    
-    if($output == false){
-        $success = 0;
-        $message = "Telecomm operator cannot be connected to user. Database error. Try again later.";
-    } 
+    if($tu->doesTelecommUserExists($tu->getTelecommOperator()->getId())){
+      $success = 0;
+      $message = "Telecom operator already exists for specified user and cannot be added.";
+    } else{
+      $output = $tu->create();
+      if($output == false){
+          $success = 0;
+          $message = "Telecomm operator cannot be connected to user. Database error. Try again later.";
+      } 
+    }
 
 }
 

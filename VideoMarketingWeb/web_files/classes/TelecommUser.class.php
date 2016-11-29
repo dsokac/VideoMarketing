@@ -283,7 +283,7 @@ class TelecommUser extends AbstractModel {
         return true;
     }
     
-    private function doesTelecommUserExists($telecommOperator){
+    public function doesTelecommUserExists($telecommOperator){
         $query = Db::makeQuery("select", array($this->t), array(), "{$this->tUser} = {$this->user->getId()} and {$this->tTelecommOperator} = {$telecommOperator}");
         $result = Db::query($query);
         return count($result) == 1;
