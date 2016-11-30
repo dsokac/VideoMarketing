@@ -153,6 +153,9 @@ class VideoTag extends AbstractModel {
         $videoView->setUser(intval($userId));
         foreach($list as $element){
             $videoView->setVideo($element->getId());
+            if($videoView->doesViewExists()){
+              $videoView = new VideoView(intval($userId), intval($element->getId()));
+            }
             $newArray = array(
                 "id" => $element->getId(),
                 "title" => $element->getTitle(),
@@ -162,6 +165,7 @@ class VideoTag extends AbstractModel {
                 "dislikes" => $element->getDislikes(),
                 "points" => $element->getPoints(),
                 "seen" => $videoView->doesViewExists() ? 1 : 0,
+                "user_like" => $videoView->doesViewExists() ? $videoView->getVideolike() : 0,
                 "created_at" => $element->getCreatedAt()
             );
             array_push($newJSON["data"], $newArray);
