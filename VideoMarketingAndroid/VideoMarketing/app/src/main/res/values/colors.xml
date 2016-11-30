@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#3f51b5</color>
+    <color name="colorPrimaryDark">#303f9f</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorWhite">#ffffff</color>
+
+    <!-- T MOBILE -->
+    <color name="color_tmobile_dark_toolbar_blue">#08537c</color>
+    <color name="color_tmobile_toolbar">#52b7ee</color>
+    <color name="color_tmobile_pink">#fc0764</color>
+    <color name="color_tmobile_grey">#727274</color>
+
+    <!-- VIP -->
+    <color name="color_vip_dark_red">#86090e</color>
+    <color name="color_vip_toolbar">#f47216</color>
+    <color name="color_vip_bottom">#ed1c24</color>
+    <color name="color_vip_black">#231f20</color>
+
+    <!--DEFAULT -->
+    <color name="color_default_primary">#6799E4</color>
+    <color name="color_default_sec">#50CDD9</color>
+    <color name="color_default_dark_primary">#0E469A</color>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="play_video_background_color">#767578</color>
+    <color name="edittext_comments_color">#dfdede</color>
+
 </resources>

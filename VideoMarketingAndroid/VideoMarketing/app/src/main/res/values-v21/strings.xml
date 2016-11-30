@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="message_lbl_ffill_reg">Ispunite prijavu!</string>
+    <string name="message_lbl_lostPassword">Zaboravili ste lozinku</string>
+</resources>

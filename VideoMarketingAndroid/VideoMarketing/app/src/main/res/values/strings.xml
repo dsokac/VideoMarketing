@@ -1,16 +1,112 @@
 <resources>
     <string name="app_name">VideoMarketing</string>
 
-    <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <!--budle key -->
+    <string name="intent_extra_user">hr.videomarketing.userparametar</string>
+    <string name="intent_logedIn">hr.videomarketing.user_logedIn</string>
+
+    <!--savedState-->
+    <string name="instance_state_user">hr.videomarketnik.savedState_user</string>
+    <!--arrays -->
+    <string-array name="genders">
+        <item>M</item>
+        <item>F</item>
+    </string-array>
+    <string-array name="months">
+        <item>Mj</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+
+    <!--registration messages-->
+    <string name="unsuccessful_registration">Neuspiješna registracija</string>
+    <string name="message_user_number_unreadable">Čitanje broja neuspiješno</string>
+    <string name="message_alert_dialog_allowPermission">Morate odobriti čianje broja kako bi mogli koristiti aplikaciju</string>
+    <string name="message_user_fields_empty">Morate unijeti vrijednosti u sva polja</string>
+    <string name="message_get_geo_locations">Dohvaćam županije</string>
+    <string name="message_geo_location_unsuccessful">Neuspiješno dohvaćanje županija</string>
+    <string name="message_registration">Registracija</string>
+    <string name="message_get_videos">Dohvaćam listu videa</string>
+    <string name="message_name_surname_format">"Ime i prezime mora bit u formatu XXXXX YYYY"</string>
+    <string name="message_warning_title">Upozorenje!</string>
+    <string name="message_user_exists">Korisnik već postoji u bazi</string>
+
+    <string name="message_toast_press2ToExit">Pritisnite jos dva puta brzo za izlaz iz aplikacije</string>
+
+    <string name="dialog_btn_permission_denied">Izlaz</string>
+
+    <string name="lblGeoLocation">ŽUPANIJA</string>
+    <string name="lblBirthday">DATUM ROĐENJA</string>
+    <string name="lblNameSurname">IME I PREZIME</string>
+    <string name="lblGender">SPOL</string>
+    <string name="lblUserName">KORISNIČKO IME</string>
+    <string name="lblPassword">LOZINKA</string>
+    <string name="lblEmail">EMAIL</string>
+
+    <!--button labels -->
+
+    <!--alerts/dialog labels -->
+    <string name="dialog_btn_text_logIn">Prijava</string>
+    <string name="dialog_btn_text_re_registration">Ponovna registracija</string>
+    <string name="dialog_btn_ask_permission_again">Ponovi upit</string>
+
+
+    <string name="message_action_logIn">Prijava u tijeku</string>
+
+
+    <string name="bntLblRegistration">Registriraj</string>
+    <string name="message_lbl_to_log_in">Već imate korisnički račun?</string>
+    <string name="message_lbl_to_registration">Nema te korisnički račun?</string>
+    <string name="message_log_in">Prijavite se!</string>
+    <string name="message_lbl_ffill_reg">Ispunite prijavu!</string>
+    <string name="message_lbl_lostPassword">Zaboravili ste lozinku</string>
+
+
+    <!--login fragment -->
+    <string name="message_lbl_corruptedInputData">Neispravni korisnički podaci</string>
+
+    <!--log_tags-->
+    <string name="log_tag_registration">VMRegActivity</string>
+    <string name="log_tag_service">VMWebService</string>
+    <string name="log_tag_app">VMApp</string>
+
+    <!--logs -->
+    <string name="lbl_sigIn">Prijavi se</string>
+    <string name="lblRecommend">Top preporuka</string>
+
+    <string name="title_activity_play_video">Play</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="lblMonth">Mjesec</string>
+    <string name="lblPointStatus">Stanje bodova</string>
+    <string name="lblUsedPoints">Potrošeni bodovi</string>
+    <string name="lblChangePassword">Promijenite lozinku</string>
+
+    <!--BottomBar -->
+    <string name="lbl_bottom_bar_Video">Video</string>
+    <string name="lbl_bottom_bar_Points">Bodovi</string>
+    <string name="lbl_bottom_bar_Likes">Sviđa mi se</string>
+    <string name="lbl_bottom_bar_Seen">Pogledano</string>
+    <string name="action_search">Pretraži</string>
+    <string name="logotip_aplikacije">Logotip Aplikacije</string>
+    <string name="logotip_operatera">Logotip operatera</string>
+    <string name="btnDoRegistrationContentDescr">Registracija</string>
+    <string name="message_search_not_implemented">Pretrazivanje nije moguce</string>
+    <string name="lblBackToVideo">Natrag na video</string>
+    <string name="back_button_desc">Natrag</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="etCommentsHint">Komentar</string>
+
 </resources>

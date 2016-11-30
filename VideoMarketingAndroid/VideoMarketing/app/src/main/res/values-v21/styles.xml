@@ -1,0 +1,29 @@
+<resources>
+
+        <style name="tmobile" parent="Theme.AppCompat.Light.NoActionBar">
+                <item name="colorPrimary">@color/color_tmobile_toolbar</item>
+                <item name="colorAccent">@color/color_tmobile_toolbar</item>
+                <item name="colorPrimaryDark">@color/common_google_signin_btn_text_dark_focused
+                </item>
+                <item name="android:textColorPrimary">
+                        @color/common_google_signin_btn_text_dark_focused
+                </item>
+                <item name="android:colorBackground">@android:color/background_light</item>
+                <item name="android:colorForeground">@color/common_google_signin_btn_text_dark</item>
+                <item name="android:windowBackground">@android:color/background_light</item>
+                <item name="android:statusBarColor">@color/color_tmobile_pink</item>
+                <item name="android:buttonStyle">@style/tmobile_button</item>
+                <item name ="android:editTextStyle">@style/tmobile_editText_line</item>
+                <item name="android:toolbarStyle">@style/tmobile_toolbar_style</item>
+        </style>
+        <style name="tmobile_button" parent="Widget.AppCompat.Button">
+                <item name="background">@color/color_tmobile_toolbar</item>
+                <item name="android:tint">@color/color_tmobile_toolbar</item>
+        </style>
+        <style name="tmobile_editText_line" parent="Widget.AppCompat.EditText">
+                <item name="android:tint">@color/color_tmobile_pink</item>
+        </style>
+        <style name="tmobile_toolbar_style" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">@color/color_tmobile_toolbar</item>
+        </style>
+</resources>

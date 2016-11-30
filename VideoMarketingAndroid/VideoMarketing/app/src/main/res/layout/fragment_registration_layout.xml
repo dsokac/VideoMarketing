@@ -1,0 +1,247 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="hr.videomarketing.Fragments.RegistrationFragment"
+    android:id="@+id/registration_scrollview_layout">
+
+    <!-- TODO: Update blank fragment layout -->
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_height="90dp"
+            app:srcCompat="@drawable/ic_epp_vip_logotip"
+            android:id="@+id/iwAppLogo"
+            android:contentDescription="@string/logotip_aplikacije"
+            android:layout_marginStart="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="100dp" />
+
+        <ImageView
+            app:srcCompat="@drawable/vip_logo"
+            android:id="@+id/iwNetworkOperLogo"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iwAppLogo"
+            android:contentDescription="@string/logotip_operatera"
+            android:layout_height="50dp"
+            android:layout_width="100dp" />
+
+        <TextView
+            android:text="@string/lblNameSurname"
+            android:layout_width="93dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/lblNameSurname"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@+id/iwNetworkOperLogo"
+            app:layout_constraintLeft_toLeftOf="@+id/etName"
+            android:layout_marginStart="8dp"
+            android:labelFor="@id/etName" />
+
+        <hr.videomarketing.CustomViews.MyEditText
+            android:layout_width="271dp"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/etName"
+            android:layout_height="45dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/lblNameSurname" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lblBirthday"
+            android:text="@string/lblBirthday"
+            app:layout_constraintLeft_toLeftOf="@+id/etBirthday"
+            app:layout_constraintTop_toBottomOf="@+id/etName"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:labelFor="@+id/etBirthday" />
+
+        <hr.videomarketing.CustomViews.MyEditText
+            android:inputType="date"
+            android:ems="10"
+            android:id="@+id/etBirthday"
+            app:layout_constraintTop_toBottomOf="@+id/lblBirthday"
+            app:layout_constraintLeft_toLeftOf="@+id/etName"
+            android:layout_width="160dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="8dp"
+            android:focusable="false" />
+
+        <TextView
+            android:text="@string/lblGender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lblGender"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/etName"
+            app:layout_constraintLeft_toLeftOf="@+id/spinGender"
+            android:layout_marginStart="8dp"
+            android:labelFor="@+id/spinGender" />
+
+        <Spinner
+            android:id="@+id/spinGender"
+            app:layout_constraintRight_toRightOf="@+id/etName"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/lblGender"
+            android:layout_width="90dp"
+            android:layout_height="45dp" />
+
+        <TextView
+            android:text="@string/lblGeoLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lblGeoUnits"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/etBirthday"
+            app:layout_constraintLeft_toLeftOf="@+id/spinGeoUnits"
+            android:layout_marginStart="8dp"
+            android:labelFor="@+id/spinGeoUnits" />
+
+        <Spinner
+            android:id="@+id/spinGeoUnits"
+            android:layout_width="268dp"
+            android:layout_height="45dp"
+            android:spinnerMode="dialog"
+            app:layout_constraintTop_toBottomOf="@+id/lblGeoUnits"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="16dp"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            android:text="@string/lblEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lblEmail"
+            app:layout_constraintTop_toBottomOf="@+id/spinGeoUnits"
+            app:layout_constraintLeft_toLeftOf="@+id/etEmail"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:labelFor="@+id/etEmail" />
+
+        <hr.videomarketing.CustomViews.MyEditText
+            android:layout_width="268dp"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:id="@+id/etEmail"
+            app:layout_constraintTop_toBottomOf="@+id/lblEmail"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_height="45dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lblUserName"
+            android:text="@string/lblUserName"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/etEmail"
+            app:layout_constraintLeft_toLeftOf="@+id/etUserName"
+            android:layout_marginStart="8dp"
+            android:labelFor="@+id/etUserName" />
+
+        <hr.videomarketing.CustomViews.MyEditText
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/etUserName"
+            app:layout_constraintTop_toBottomOf="@+id/lblUserName"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="268dp"
+            android:layout_marginTop="8dp"
+            android:layout_height="45dp"
+            tools:ignore="LabelFor" />
+
+        <TextView
+            android:text="@string/lblPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lblPassword"
+            app:layout_constraintTop_toBottomOf="@+id/etUserName"
+            app:layout_constraintLeft_toLeftOf="@+id/etLogInPassword"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:labelFor="@+id/etLogInPassword" />
+
+        <hr.videomarketing.CustomViews.MyEditText
+            android:layout_width="268dp"
+            android:layout_height="45dp"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/etLogInPassword"
+            app:layout_constraintTop_toBottomOf="@+id/lblPassword"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="8dp" />
+
+        <ImageButton
+            app:srcCompat="@drawable/btn_registration_circle_red"
+            android:id="@+id/ibDoRegistratin"
+            android:layout_width="268dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/etLogInPassword"
+            android:layout_marginStart="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:contentDescription="@string/btnDoRegistrationContentDescr" />
+
+        <TextView
+            android:text="@string/message_lbl_to_log_in"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:id="@+id/lblHaveAcc"
+            app:layout_constraintTop_toBottomOf="@+id/ibDoRegistratin"
+            app:layout_constraintLeft_toLeftOf="@+id/ibDoRegistratin"
+            android:layout_marginTop="16dp"
+            android:textAlignment="textStart"
+            app:layout_constraintRight_toLeftOf="@+id/etLogIn"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintHorizontal_bias="0.62"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="24dp" />
+
+        <hr.videomarketing.CustomViews.MyEditText
+            android:layout_width="82dp"
+            android:layout_height="36dp"
+            android:inputType="textPersonName"
+            android:text="@string/message_log_in"
+            android:ems="10"
+            android:id="@+id/etLogIn"
+            app:layout_constraintTop_toBottomOf="@+id/ibDoRegistratin"
+            app:layout_constraintRight_toRightOf="@+id/ibDoRegistratin"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="24dp"
+            android:contentDescription="@string/lbl_sigIn"
+            tools:ignore="LabelFor"
+            android:textSize="12sp" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</ScrollView>

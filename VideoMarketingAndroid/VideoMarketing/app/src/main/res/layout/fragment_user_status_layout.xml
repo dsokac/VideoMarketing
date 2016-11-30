@@ -1,0 +1,134 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="hr.videomarketing.Fragments.UserStatusFragment">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <hr.videomarketing.CustomViews.MyEditText
+            android:layout_width="281dp"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/etUserName"
+            android:paddingLeft="8dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/twUserName"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+
+        <TextView
+            android:text="@string/lblUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/twUserName"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/iwProviderLogo"
+            app:layout_constraintLeft_toLeftOf="@+id/etUserName"
+            app:layout_constraintRight_toRightOf="@+id/etUserName"
+            app:layout_constraintHorizontal_bias="0.0" />
+
+        <ImageView
+            app:srcCompat="@drawable/ic_epp_vip_logotip"
+            android:id="@+id/iwAppLogo"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginStart="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="24dp" />
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="52dp"
+            app:srcCompat="@drawable/vipnet_logo_2"
+            android:id="@+id/iwProviderLogo"
+            app:layout_constraintTop_toBottomOf="@+id/iwAppLogo"
+            android:layout_marginStart="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:text="@string/lblMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/twMonth"
+            android:textAllCaps="true"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/etUserName"
+            app:layout_constraintLeft_toLeftOf="@+id/spinMonth"
+            app:layout_constraintRight_toRightOf="@+id/spinMonth"
+            app:layout_constraintHorizontal_bias="0.0" />
+
+        <Spinner
+            android:layout_width="84dp"
+            android:layout_height="41dp"
+            android:id="@+id/spinMonth"
+            app:layout_constraintTop_toBottomOf="@+id/twMonth"
+            android:layout_marginTop="8dp"
+            app:layout_constraintLeft_toLeftOf="@+id/etUserName"
+            app:layout_constraintRight_toRightOf="@+id/etUserName"
+            app:layout_constraintHorizontal_bias="0.0" />
+
+
+        <hr.videomarketing.CustomViews.MyEditText
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/etPointStatus"
+            app:layout_constraintTop_toBottomOf="@+id/twPointStatus"
+            android:layout_marginTop="8dp"
+            app:layout_constraintLeft_toLeftOf="@+id/twPointStatus"
+            app:layout_constraintRight_toRightOf="@+id/twPointStatus" />
+        <TextView
+            android:text="@string/lblPointStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/twPointStatus"
+            android:textAllCaps="true"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/spinMonth"
+            app:layout_constraintLeft_toLeftOf="@+id/spinMonth"
+            app:layout_constraintRight_toRightOf="@+id/spinMonth"
+            app:layout_constraintHorizontal_bias="0.0" />
+
+        <TextView
+            android:text="@string/lblUsedPoints"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/twUsedPoints"
+            android:textAllCaps="true"
+            android:layout_marginStart="8dp"
+            app:layout_constraintLeft_toRightOf="@+id/twPointStatus"
+            app:layout_constraintRight_toRightOf="@+id/etUserName"
+            app:layout_constraintHorizontal_bias="1.0"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/spinMonth" />
+
+        <hr.videomarketing.CustomViews.MyEditText
+            android:layout_width="129dp"
+            android:layout_height="45dp"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/etUsedPoints"
+            app:layout_constraintTop_toBottomOf="@+id/twUsedPoints"
+            android:layout_marginTop="8dp"
+            app:layout_constraintLeft_toLeftOf="@+id/twUsedPoints"
+            app:layout_constraintRight_toRightOf="@+id/twUsedPoints" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentEnd="true"
+    android:id="@+id/bottomBar"
+    android:layout_centerHorizontal="true"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp">
+    <hr.videomarketing.CustomViews.BottomBar.VideoBBI
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:textLabel="Video"
+        app:icon="@drawable/ic_video"
+        android:id="@+id/videoBBItem"/>
+    <hr.videomarketing.CustomViews.BottomBar.PointsBBI
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:textLabel="Points"
+        app:icon="@drawable/ic_bbi_points"
+        android:id="@+id/pointsBBItem"
+        android:layout_toEndOf="@+id/videoBBItem" />
+    <hr.videomarketing.CustomViews.BottomBar.LikesBBI
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:textLabel="Sviđa mi se"
+        app:icon="@drawable/ic_like"
+        android:id="@+id/likesBBItem"
+        android:layout_toEndOf="@+id/pointsBBItem" />
+    <hr.videomarketing.CustomViews.BottomBar.SeenBBI
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:textLabel="Pogledano"
+        app:icon="@drawable/ic_bbi_seen"
+        android:id="@+id/seenBBItem"
+        android:layout_toEndOf="@+id/likesBBItem" />
+
+</RelativeLayout>

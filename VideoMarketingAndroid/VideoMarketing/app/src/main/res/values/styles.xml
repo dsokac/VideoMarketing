@@ -1,11 +1,83 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
     </style>
 
+    <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Theme.Material.Light.NoActionBar.Light.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar" />
+
+    <style name="Theme_TMobile" parent="AppTheme">
+        <item name="colorPrimary">@color/color_tmobile_toolbar</item>
+        <item name="colorAccent">@color/color_tmobile_pink</item>
+        <item name="colorPrimaryDark">@color/common_google_signin_btn_text_dark_focused</item>
+        <item name="android:textColorPrimary">@color/common_google_signin_btn_text_dark_focused
+        </item>
+        <item name="android:colorBackground">@android:color/background_light</item>
+        <item name="android:colorForeground">@color/common_google_signin_btn_text_dark</item>
+        <item name="android:windowBackground">@android:color/background_light</item>
+        <item name="android:buttonStyle">@style/tmobile_button</item>
+        <item name="android:editTextStyle">@style/tmobile_editText_line</item>
+        <item name="android:statusBarColor">@color/color_tmobile_pink</item>
+        <item name="android:toolbarStyle">@style/tmobile_toolbar_style</item>
+    </style>
+
+    <style name="tmobile_button" parent="Widget.AppCompat.Button">
+        <item name="background">@color/color_tmobile_toolbar</item>
+        <item name="android:tint">@color/color_tmobile_toolbar</item>
+    </style>
+
+    <style name="tmobile_editText_line" parent="Widget.AppCompat.EditText">
+        <item name="android:tint">@color/color_tmobile_pink</item>
+    </style>
+
+    <style name="tmobile_toolbar_style" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">@color/color_tmobile_toolbar</item>
+    </style>
+
+    <style name="Theme_Vip" parent="Base.Theme.AppCompat">
+        <item name="colorPrimary">@color/color_vip_toolbar</item>
+        <item name="colorAccent">@color/color_vip_bottom</item>
+        <item name="colorPrimaryDark">@color/color_vip_bottom</item>
+        <item name="android:textColorPrimary">@color/common_google_signin_btn_text_dark_focused
+        </item>
+        <item name="android:colorBackground">@android:color/background_light</item>
+        <item name="android:colorForeground">@color/common_google_signin_btn_text_dark</item>
+        <item name="android:windowBackground">@android:color/background_light</item>
+        <item name="android:buttonStyle">@style/vip_button</item>
+        <item name="android:editTextStyle">@style/vip_editText_line</item>
+        <item name="android:navigationBarColor">@color/color_vip_toolbar</item>
+        <item name="android:toolbarStyle">@style/vip_toolbar_style</item>
+    </style>
+
+    <style name="vip_button" parent="Widget.AppCompat.Button">
+        <item name="background">@color/color_vip_bottom</item>
+    </style>
+
+    <style name="vip_editText_line" parent="Widget.AppCompat.EditText">
+        <item name="android:tint">@color/color_vip_bottom</item>
+    </style>
+
+    <style name="vip_toolbar_style" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">@color/color_vip_toolbar</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
 </resources>

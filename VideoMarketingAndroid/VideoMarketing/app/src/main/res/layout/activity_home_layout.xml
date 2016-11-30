@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="hr.videomarketing.HomeActivity"
+    android:weightSum="1">
+
+    <!--<android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_vip_toolbar"
+        android:theme="?attr/actionBarTheme"
+        android:minHeight="?attr/actionBarSize"
+        android:maxButtonHeight="?attr/actionBarSize"
+        android:id="@+id/topNavBar"
+        app:titleTextColor="@android:color/background_light"
+        android:layout_alignParentStart="false" />-->
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_vip_toolbar"
+        android:theme="?attr/actionBarTheme"
+        android:minHeight="?attr/actionBarSize"
+        android:id="@+id/toolBar" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.99"
+        android:id="@+id/fragmentContainer"
+        android:layout_below="@+id/toolBar"
+        android:layout_height="300dp"
+        android:layout_above="@+id/bottomBar">
+
+    </FrameLayout>
+    <hr.videomarketing.CustomViews.BottomBar.BottomBar
+        android:layout_width="fill_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/bottomBar"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_vip_bottom"/>
+    <hr.videomarketing.CustomViews.CustomBackButton
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:id="@+id/customBack"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_vip_bottom"
+        android:visibility="gone" />
+
+</RelativeLayout>
