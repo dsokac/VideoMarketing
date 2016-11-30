@@ -20,6 +20,6 @@ RewriteRule ^webservice/change_telecomm$ web_files/webservices/change_telecomm.p
 RewriteRule ^webservice/telecomm_operators?$ web_files/webservices/telecomm_operators.php [NC,L]
 RewriteRule ^webservice/add_telecomm_user?$ web_files/webservices/add_telecomm_user.php [NC,L]
 RewriteRule ^webservice/check_phone_number?$ web_files/webservices/check_phone_number.php [NC,L]
-RewriteRule ^webservice/pints_per_month?$ web_files/webservices/points_per_month.php [NC,L]
+RewriteRule ^webservice/points_per_month?$ web_files/webservices/points_per_month.php [NC,L]
 RewriteRule ^admin/videos$ web_files/php_scripts/admin_videos.php [NC,L]
 #RewriteRule ^ajax/video/add$ web_files/ajax_scripts/admin_addNewVideo.ajax.php?title=$1&url=$2 [NC,L]
