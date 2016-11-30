@@ -167,6 +167,12 @@ class VideoView extends AbstractModel {
         return $result == 1;
     }
     
+    public function hasUserViews(){
+        $query = Db::makeQuery("select", array($this->t),array(),"{$this->tUser} = {$this->user->getId()}");
+        $result = count(Db::query($query));
+        return $result >= 1;
+    }
+    
     //TODO dokumentacija
     public function getSumViews(){
         $query = Db::makeQuery("select", array($this->t), array("sum({$this->tCount})"),"{$this->tVideo} = {$this->video->getId()} and deleted = 0 group by {$this->tVideo}");

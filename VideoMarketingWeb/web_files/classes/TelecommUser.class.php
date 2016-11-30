@@ -5,6 +5,7 @@ include_once "AbstractModel.class.php";
 include_once "User.class.php";
 include_once "TelecommOperator.class.php";
 include_once "Video.class.php";
+include_once "VideoView.class.php";
 
 /* /web_files/classes/models/
  * To change this license header, choose License Headers in Project Properties.
@@ -308,6 +309,11 @@ class TelecommUser extends AbstractModel {
     
      //TODO documentation
     public function getPointsStatsPerMonth(){
+        $vv = new VideoView();
+        $vv->setUser($this->user->getId());
+        if(!$vv->hasUserViews()){
+          return array(["month" => intval(date("n"))-1, "year" => intval(date("Y")), "earned" => 0, "spent" => 0]);
+        }
         $early = $this->getEarliestMonthYear();
         $current = $this->getCurrentMonthYear();
         $output = array();
