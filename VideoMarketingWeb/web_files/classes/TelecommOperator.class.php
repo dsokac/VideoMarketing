@@ -128,4 +128,5 @@ class TelecommOperator extends AbstractModel {
         return $this->dbOperation(false, $columnsArray, $valuesArray);
     }
 
+    
 }

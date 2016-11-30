@@ -4,6 +4,7 @@ include_once "Db.class.php";
 include_once "AbstractModel.class.php";
 include_once "User.class.php";
 include_once "TelecommOperator.class.php";
+include_once "Video.class.php";
 
 /* /web_files/classes/models/
  * To change this license header, choose License Headers in Project Properties.
@@ -305,4 +306,98 @@ class TelecommUser extends AbstractModel {
        $this->setTelecommOperator(intval($id));
      }
     
+     //TODO documentation
+    public function getPointsStatsPerMonth(){
+        $early = $this->getEarliestMonthYear();
+        $current = $this->getCurrentMonthYear();
+        $output = array();
+        $count  = 1;
+        for( $i = $early["year"]; $i <= $current["year"]; $i++){
+          for($count >= 2 ? $j = 0 : $j = $early["month"]; $j <= 11 && $i < $current["year"] || $j <= $current["month"] && $i == $current["year"]; $j++){
+            $currentMonthYear = $this->getPointsForMonth($j, $i);
+            array_push($output, $currentMonthYear);
+          }
+          $count++;
+        }
+        return $output;
+    }
+    
+    //TODO documentation
+    private function getEarliestMonthYear(){
+       $query = Db::makeQuery("select", array("video_views"), array("created_at"), "user = {$this->user->getId()} order by created_at asc limit 1");
+       $result = Db::query($query)[0];
+       $earlyDate = date_create_from_format("Y-m-d H:i:s", $result["created_at"]);
+       return array("month" => intval($earlyDate->format("n"))-1, "year" => intval($earlyDate->format("Y")));
+    }
+    
+    //TODO documentation
+    private function getCurrentMonthYear(){
+       $month = intval(date("n"))-1;
+       $year = intval(date("Y"));
+       return array("month" => $month, "year" => $year);
+    }
+    
+    //TODO documentation
+    private function getPointsForMonth($month, $year){
+      $earnedPoints = $this->getEarnedPointsForMonth($month, $year);
+      $spentPoints = $this->getSpentPointsForMonth($month, $year);
+      $restPoints = $earnedPoints - $spentPoints;
+      return ["month" => $month, "year" => $year, "earned" => $restPoints, "spent" => $spentPoints];
+    }
+    
+    //TODO documentation
+    private function getEarnedPointsForMonth($month, $year){
+      $startDateString = "01.".($month+1).".{$year} 00:00:00";
+      if($month == 11){
+        $month = 1;
+        $year++;
+      } else {
+        $month += 2;
+      }
+      $endDateString = "01.{$month}.{$year} 00:00:00";
+      $startDate = date_create_from_format("d.m.Y H:i:s", $startDateString);
+      $endDate = date_create_from_format("d.m.Y H:i:s", $endDateString);
+      
+      $constraints = "{$this->tUser} = {$this->user->getId()} and '{$startDate->format("Y-m-d H:i:s")}' <= {$this->tCreatedAt} "
+      . "and {$this->tCreatedAt} < '{$endDate->format("Y-m-d H:i:s")}' order by {$this->tCreatedAt} asc" ;
+      $query = Db::makeQuery("select", array("video_views"), array("created_at","video"), $constraints);
+      
+      $results = Db::query($query);
+      $sum = 0;
+      if(count($results) > 0){
+        foreach($results as $result){
+          $v = new Video(intval($result["video"]));
+          $sum += floatval($v->getPoints());
+        }
+      }
+      return $sum;
+      
+    }
+    
+    //TODO documentation
+    private function getSpentPointsForMonth($month, $year){
+      $startDateString = "01.".($month+1).".{$year} 00:00:00";
+      if($month == 11){
+        $month = 1;
+        $year++;
+      } else {
+        $month += 2;
+      }
+      $endDateString = "01.{$month}.{$year} 00:00:00";
+      $startDate = date_create_from_format("d.m.Y H:i:s", $startDateString);
+      $endDate = date_create_from_format("d.m.Y H:i:s", $endDateString);
+      
+      $constraints = "{$this->tUser} = {$this->user->getId()} and {$this->tTelecommOperator} = {$this->telecommOperator->getId()} "
+      . "and '{$startDate->format("Y-m-d H:i:s")}' <= {$this->tCreatedAt} and {$this->tCreatedAt} < '{$endDate->format("Y-m-d H:i:s")}' order by {$this->tCreatedAt} asc" ;
+      $query = Db::makeQuery("select", array("telecomm_users_spending_logs"), array("created_at","points_spent"), $constraints);
+      
+      $results = Db::query($query);
+      $sum = 0;
+      if(count($results) > 0){
+        foreach($results as $result){
+          $sum += floatval($result["points_spent"]);
+        }
+      }
+      return $sum;
+    }
 }

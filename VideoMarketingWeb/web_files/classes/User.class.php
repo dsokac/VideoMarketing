@@ -235,6 +235,5 @@ class User extends MetaUser {
         $result = Db::query($query);
         return count($result) >= 1;
     }
-    
-    
+        
 }
