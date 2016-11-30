@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web_texts>
+    <property_doesnt_exists>Property doesn't exists</property_doesnt_exists>
+    <property_value_unknown>Unknown</property_value_unknown>
+    <no_telecomm_connection>User hasn't joined to any telecomm operator</no_telecomm_connection>    
+</web_texts>

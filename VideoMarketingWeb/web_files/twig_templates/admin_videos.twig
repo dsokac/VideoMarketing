@@ -1,0 +1,73 @@
+{% extends 'base_template.twig' %}
+
+{% block page_title %}
+    Video administration
+{% endblock %}
+
+{% block page_content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <h3>Video administration</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row" style="margin-bottom: 5px;">
+                <div id="videoAdminForm_errors" class="col-lg-12">
+                    
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 5px;">
+                <div class="col-lg-12">
+                    <input id="InputAdminVideo_title" placeholder="Video title" class="form-control input-lg">
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 5px;">
+                <div class="col-lg-12">
+                    <input id="InputAdminVideo_url" placeholder="Video url" class="form-control input-lg">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <button id="add_adminVideo" class="btn btn-lg btn-success">Add video</button>
+                    <button class="btn btn-lg btn-default">Clear form</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <h4 class="h4">Deleted videos</h4>
+                    </div>
+                    <div class="row">
+                        <h4 class="h4">Current videos</h4>
+                        {% for video in videos %}
+                            <div class="col-lg-10 thumbnail" style="box-shadow: #265a88 1px 1px 1px">
+                                <div class="row">
+                                    <div class="col-lg-10">
+                                        <h6 class="h6" style="font-weight: bold;">{{video.title}}</h6>
+                                        <p><a target="_blank" href="{{video.link}}" >{{video.link}}</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <button class="btn btn-sm btn-default"><span class="glyphicon glyphicon-edit"></span></button>
+                                        <button class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+{% endblock %}
+
+{% block page_specific_includes_footer %}
+    {% for script in scripts %}
+        <script src="{{script}}"></script>
+    {% endfor %}
+{% endblock %}
