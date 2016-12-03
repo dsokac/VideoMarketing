@@ -160,6 +160,7 @@ class VideoTag extends AbstractModel {
                 "id" => $element->getId(),
                 "title" => $element->getTitle(),
                 "link" => $element->getLink(),
+                "thumbnail_url" => $element->getThumbnailUrl(),
                 "likes" => $element->getLikes(),
                 "sponsored" => $element->getSponsored(),
                 "dislikes" => $element->getDislikes(),
