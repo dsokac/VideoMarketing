@@ -11,7 +11,7 @@ $video = $_GET["video"];
 $user = $_GET["user"];
 $like = $_GET["like"];
 
-$vv = new VideoView($user, $video);
+$vv = new VideoView(intval($user), intval($video));
 $oldLike = $vv->getVideolike();
 $vv->setVideolike($like);
 $output = $vv->save();

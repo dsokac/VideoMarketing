@@ -18,7 +18,7 @@ if(!$user->doesUserExists($username, $password)){
     $success = 0;
     $message = "User doesn't exist in database or incorrect credentials were provided.";
 } else{
-    $ctlUser = new User($user->getUserId($username, $password));
+    $ctlUser = new User(intval($user->getUserId($username, $password)));
     if($ctlUser->isUserDeleted()){
         $success = 0;
         $message = "Requested user is already deleted.";
