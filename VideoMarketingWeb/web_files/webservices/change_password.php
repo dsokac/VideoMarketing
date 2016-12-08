@@ -12,17 +12,8 @@ $newPass = $_GET["password"];
 $success = 1;
 $message = "Your password has been changed successfully.";
 
-$u = new User($id);
-if($u->isPasswordEqualTo($newPass)){
-    $success = 0;
-    $message = "You can not change password into old one.";
-} else {
-    $output = $u->changePassword($newPass);
-    if($output == 0){
-        $success = 0;
-        $message = "Password could not be changed. Database error. Try again later.";
-    }
-}
+$u = new User(itnval($id));
+
 
 
 $json = array(

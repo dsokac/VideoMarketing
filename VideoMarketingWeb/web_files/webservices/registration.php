@@ -32,6 +32,7 @@ if($u->emailExists($email)){
     $success = 0;
     $message = "Phone number already exists in database, please login or try again.";
 } else {
+    $mobile_number = preg_replace("/0/", "+", $mobile_number, 1); 
     $newUser = new User();
     $newUser->setName($name);
     $newUser->setSurname($surname);

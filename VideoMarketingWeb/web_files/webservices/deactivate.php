@@ -11,7 +11,7 @@ $id = $_GET["id"];
 $success = 1;
 $message = "Your account is deactivated successfully";
 
-$u = new User($id);
+$u = new User(intval($id));
 
 if($u->isUserDeleted()){
     $success = 0;

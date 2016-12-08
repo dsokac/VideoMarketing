@@ -24,6 +24,7 @@ class Video extends AbstractModel {
     protected $likes;
     protected $dislikes;
     protected $sponsored;
+    protected $thumbnailUrl;
  
     protected $t = "videos";
     protected $tId = "id";
@@ -33,6 +34,7 @@ class Video extends AbstractModel {
     protected $tLikes = "likes";
     protected $tDislikes = "dislikes";
     protected $tSponsored = "sponsored";
+    protected $tThumbnailUrl = "thumbnail_url";
     
     public function getTitle() {
         return str_replace("''","'",$this->title);
@@ -86,7 +88,16 @@ class Video extends AbstractModel {
     public function getId() {
         return $this->id;
     }
+    
+    function getThumbnailUrl() {
+      return $this->thumbnailUrl;
+    }
 
+    function setThumbnailUrl($thumbnailUrl) {
+      $this->thumbnailUrl = $thumbnailUrl;
+    }
+
+    
     /**
      * Method creates new row in table filled with data in class properties.
      * @return int num of rows affected by query.
@@ -94,12 +105,14 @@ class Video extends AbstractModel {
     public function create() {
         $columnsArray = array(
             $this->tTitle,
-            $this->tLink
+            $this->tLink,
+            $this->tThumbnailUrl
         );
         
         $valuesArray = array(
             str_replace("'","''",$this->title),
-            $this->link
+            $this->link,
+            $this->thumbnailUrl
         );
         
         return $this->dbOperation(true, $columnsArray, $valuesArray);
@@ -120,6 +133,7 @@ class Video extends AbstractModel {
         $this->likes = intval($data[$this->tLikes]);
         $this->dislikes = intval($data[$this->tDislikes]);
         $this->sponsored = intval($data[$this->tSponsored]);
+        $this->thumbnailUrl = $data[$this->tThumbnailUrl];
         parent::__construct();
        
     }
@@ -136,7 +150,8 @@ class Video extends AbstractModel {
             $this->tPoints,
             $this->tLikes,
             $this->tDislikes,
-            $this->tSponsored
+            $this->tSponsored,
+            $this->tThumbnailUrl
         );
         
         $valuesArray = array(
@@ -146,7 +161,8 @@ class Video extends AbstractModel {
             $this->points,
             $this->likes,
             $this->dislikes,
-            $this->sponsored
+            $this->sponsored,
+            $this->thumbnailUrl
         );
         
         if($this->deletedAt != null && $this->deletedAt != ""){

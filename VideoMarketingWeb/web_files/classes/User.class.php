@@ -101,7 +101,7 @@ class User extends MetaUser {
         $this->numWrongLogins = intval($data[$this->tNumWrongLogins]);
         $this->blocked = intval($data[$this->tBlocked]);
         $this->deactivated = intval($data[$this->tDeactivated]);
-        $this->geographicUnit = new GeographicUnit($data[$this->tGeographicUnit]);
+        $this->geographicUnit = new GeographicUnit(intval($data[$this->tGeographicUnit]));
         $this->createdAt = $data[$this->tCreatedAt];
         $this->updatedAt = $data[$this->tUpdatedAt];
         $this->deletedAt = $data[$this->tDeletedAt];
