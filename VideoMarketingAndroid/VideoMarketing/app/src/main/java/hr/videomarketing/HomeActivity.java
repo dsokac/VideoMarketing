@@ -3,6 +3,7 @@ package hr.videomarketing;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -69,6 +70,8 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
     private VideoListService videoService = null;
     private Video lastVideo;
     private boolean showMenuIconSave = false;
+    private boolean refreshButton = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,8 +114,8 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
         bottomBar.setBackgroundColor(getResources().getColor(PROVIDER.getColors().getBottomBarColor()));
         toolbar.setBackgroundColor(getResources().getColor(PROVIDER.getColors().getToolbarColor()));
 
-        Drawable icon = getResources().getDrawable(R.drawable.ic_settings);
 
+        Drawable icon = getResources().getDrawable(R.drawable.ic_settings);
         toolbar.setNavigationIcon(icon);
 
         toolbar.setTitle("");
@@ -154,36 +157,6 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_exit:
-                final VideoMarketingAppDialog dialog = new VideoMarketingAppDialog();
-                dialog.setText(getResources().getString(R.string.alert_dialog_message_exit));
-                dialog.setCheckBoxVisibility(View.GONE);
-                dialog.setTitle(getResources().getString(R.string.action_exit));
-                dialog.setPostivieButtonText(getResources().getString(R.string.action_exit));
-                dialog.setNegativeButtonText(getString(R.string.alert_dialog_message_negative));
-                dialog.setPositiveButton(new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                });
-                dialog.setNegativeButton(new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(dialog.isVisible()){
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                dialog.show(getSupportFragmentManager(),"VideoMarketingAppDialogOnExit");
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if(!activeUser.isNullObject()){
@@ -202,19 +175,35 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
     @Override
     public void onBackPressed() {
         int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-        if(backStackCount>1){
-            super.onBackPressed();
+        if(back>2){
+            final VideoMarketingAppDialog dialog = new VideoMarketingAppDialog();
+            dialog.setText(getResources().getString(R.string.alert_dialog_message_exit));
+            dialog.setCheckBoxVisibility(View.GONE);
+            dialog.setTitle(getResources().getString(R.string.action_exit));
+            dialog.setPostivieButtonText(getResources().getString(R.string.action_exit));
+            dialog.setNegativeButtonText(getString(R.string.alert_dialog_message_negative));
+            dialog.setPositiveButton(new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                }
+            });
+            dialog.setNegativeButton(new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if(dialog.isVisible()){
+                        dialog.dismiss();
+                    }
+                }
+            });
+            dialog.show(getSupportFragmentManager(),"VideoMarketingAppDialogOnExit");
         }
         else {
-            //TODO:implement exit
-            if(back>=2){
-
-                finish();
-            }
-            else{
-                back++;
-                Toast.makeText(this,getString(R.string.message_toast_press2ToExit),Toast.LENGTH_SHORT).show();
-                handleClick(2000);
+            back++;
+            Toast.makeText(this,"Za izlaz pritisnite jos "+(3-back)+" puta brzo",Toast.LENGTH_SHORT).show();
+            handleClick(2000);
+            if(backStackCount>1){
+                super.onBackPressed();
             }
         }
     }
@@ -427,14 +416,27 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar_menu,menu);
         MenuItem item = menu.findItem(R.id.action_save);
-        MenuItem powerItem = menu.findItem(R.id.action_exit);
+        Drawable iconsave = getResources().getDrawable(R.drawable.ic_save);
+        iconsave.setColorFilter(getResources().getColor(PROVIDER.getColors().getLinesColor()), PorterDuff.Mode.SRC_ATOP);
+        item.setIcon(iconsave);
+        MenuItem refreshItem = menu.findItem(R.id.action_refresh_video);
+        Drawable iconRefresh = getResources().getDrawable(R.drawable.ic_refresh);
+        iconRefresh.setColorFilter(getResources().getColor(PROVIDER.getColors().getLinesColor()), PorterDuff.Mode.SRC_ATOP);
         item.setVisible(showMenuIconSave);
-        powerItem.setVisible(!showMenuIconSave);
+        refreshItem.setIcon(iconRefresh);
+        refreshItem.setVisible(refreshButton);
+
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public void userUpdated(User user) {
         this.activeUser = user;
+    }
+
+    @Override
+    public void setRefreshButtonVisibility(boolean visibility) {
+        this.refreshButton = visibility;
+        invalidateOptionsMenu();
     }
 }

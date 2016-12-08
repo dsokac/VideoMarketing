@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import hr.videomarketing.Models.BaseModel.User;
 import hr.videomarketing.Models.BaseModel.Video;
-import hr.videomarketing.Models.VideoAdapter;
+import hr.videomarketing.Utils.VideoAdapter;
 import hr.videomarketing.R;
 import hr.videomarketing.Utils.VideoClickListener;
 import hr.videomarketing.Utils.VideoTransfer;

@@ -1,4 +1,4 @@
-package hr.videomarketing.Models;
+package hr.videomarketing.Utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,7 +15,6 @@ import android.widget.TextView;
 import hr.videomarketing.CustomViews.MyVideoViewIcon;
 import hr.videomarketing.Models.BaseModel.Video;
 import hr.videomarketing.R;
-import hr.videomarketing.Utils.VideoClickListener;
 import hr.videomarketing.VideoMarketingApp;
 
 /**

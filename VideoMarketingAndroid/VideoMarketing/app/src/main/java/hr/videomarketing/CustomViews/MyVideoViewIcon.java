@@ -19,8 +19,6 @@ public class MyVideoViewIcon extends MyVideoView {
     private void initialize(){
         LayoutInflater inf = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inf.inflate(R.layout.layout_video_list_item_iccon_view,null);
-
-
     }
 
     public ImageView getIcon() {

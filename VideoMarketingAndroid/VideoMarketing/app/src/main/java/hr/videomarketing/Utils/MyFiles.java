@@ -44,12 +44,12 @@ public class MyFiles {
     }
 
     public boolean writeInFile(Context context, Files file, String contentToWrite) {
-        FileOutputStream fos = null;
+        if(context == null|| file == null || contentToWrite == null)return false;
         try {
-            fos = context.openFileOutput(file.getPath(), Context.MODE_PRIVATE);
+            FileOutputStream fos = context.openFileOutput(file.getPath(), Context.MODE_PRIVATE);
             String stringToWrite = contentToWrite.replace(" ","");
             fos.write(stringToWrite.getBytes());
-            Log.i("VMFile: ","write: "+stringToWrite);
+            log("myFiles>write");
             fos.close();
             return true;
         } catch (IOException ioe) {
@@ -59,9 +59,9 @@ public class MyFiles {
     }
 
     public Object readFromFIle(Context context, Files file) {
-        FileInputStream fis = null;
+        if(context == null|| file == null)return null;
         try {
-            fis = context.openFileInput(file.getPath());
+            FileInputStream fis = context.openFileInput(file.getPath());
             switch (file) {
                 case USER_DATA_FILE:
                     return User.newInstance(readData(fis));
@@ -70,7 +70,6 @@ public class MyFiles {
                 case DIALOG_SHOW_STATE:
                     return readData(fis);
                 default:
-                    log("Action>Read>File: "+file.getPath()+"not found");
                     return null;
             }
         } catch (IOException fnfE) {
@@ -88,7 +87,7 @@ public class MyFiles {
         bufferReader.close();
         fis.close();
         String data = strbuffer.toString();
-        log("Read>"+data);
+        log("myFiles>read");
         return data;
     }
     private void log(String txt){

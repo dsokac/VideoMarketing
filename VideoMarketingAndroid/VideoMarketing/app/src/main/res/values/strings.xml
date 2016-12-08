@@ -95,7 +95,7 @@
     <string name="lbl_bottom_bar_Points">Bodovi</string>
     <string name="lbl_bottom_bar_Likes">Sviđa mi se</string>
     <string name="lbl_bottom_bar_Seen">Pogledano</string>
-    <string name="action_save">Spremi</string>
+    <string name="toolbar_aaction_save">Spremi</string>
     <string name="logotip_aplikacije">Logotip Aplikacije</string>
     <string name="logotip_operatera">Logotip operatera</string>
     <string name="btnDoRegistrationContentDescr">Registracija</string>
@@ -127,5 +127,8 @@
     <string name="alert_dialog_ok">OK</string>
     <string name="message_view_not_count">Bodovi za prikazani video se neće računati</string>
     <string name="lblSeek">Vrati natrag</string>
+    <string name="toolbar_action_refresh_videolist">Osvježi listu</string>
+    <string name="toast_message_no_new_videos">Nema novih videa</string>
+    <string name="toast_message_view_count">Pogled videa zabilježen</string>
 
 </resources>

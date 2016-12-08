@@ -52,6 +52,7 @@ public abstract class VideoMarketingWebService extends WebService implements Con
 
     @Override
     protected void serviceUnsuccessful(WebServiceException error,String retrievedData) {
+        closeProgresssDialog();
         if(error.equals(NO_INTERNET_CONNECTION)){
             log("WebServiceException>no internet connection");
         }

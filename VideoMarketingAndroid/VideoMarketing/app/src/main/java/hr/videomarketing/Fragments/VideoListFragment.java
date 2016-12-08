@@ -3,21 +3,26 @@ package hr.videomarketing.Fragments;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import hr.videomarketing.Models.BaseModel.User;
 import hr.videomarketing.Models.BaseModel.Video;
-import hr.videomarketing.Models.VideoAdapter;
+import hr.videomarketing.Utils.VideoAdapter;
 import hr.videomarketing.MyWebService.Interfaces.OnVideoThumbnailDownloaded;
 import hr.videomarketing.MyWebService.Interfaces.VideoListInteractionService;
 import hr.videomarketing.MyWebService.Services.VideoListService;
@@ -39,6 +44,7 @@ import static hr.videomarketing.VideoMarketingApp.PROVIDER;
 public class VideoListFragment extends Fragment implements VideoClickListener,VideoListInteractionService, View.OnClickListener, OnVideoThumbnailDownloaded {
 
     private static final String ARG_USER = "hr.videomarketing.user_extras";
+    private final static int refreshDelay = 180000;
     private User user;
     private TextView twTop;
     private OnFragmentInteractionListener mListener;
@@ -46,6 +52,7 @@ public class VideoListFragment extends Fragment implements VideoClickListener,Vi
     private GridView gridView = null;
     private Video[] videos=null;
     private int topVideo;
+    private boolean refresh = false;
 
     public VideoListFragment() {
         // Required empty public constructor
@@ -73,6 +80,7 @@ public class VideoListFragment extends Fragment implements VideoClickListener,Vi
         if(getArguments() != null){
             user = User.newInstance(getArguments().getString(ARG_USER));
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -98,12 +106,26 @@ public class VideoListFragment extends Fragment implements VideoClickListener,Vi
 
     }
 
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mListener.setRefreshButtonVisibility(true);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mListener.setRefreshButtonVisibility(false);
+    }
+
     @Override
     public void onStart() {
         if(videos == null || videos.length ==0){
             Video[] vid = mListener.getVideos("");
             if(vid == null){
-                getVideos();
+                getVideos(true);
             }
         }
         else{
@@ -112,9 +134,9 @@ public class VideoListFragment extends Fragment implements VideoClickListener,Vi
         super.onStart();
     }
 
-    private void getVideos() {
+    private void getVideos(boolean showProgressDialog) {
         VideoListService videoListService = new VideoListService(user.getId(),this);
-        videoListService.setProgressDialog(getResources().getString(R.string.message_get_videos));
+        if(showProgressDialog)videoListService.setProgressDialog(getResources().getString(R.string.message_get_videos));
         videoListService.execute();
     }
 
@@ -180,10 +202,14 @@ public class VideoListFragment extends Fragment implements VideoClickListener,Vi
 
     @Override
     public void onVideosReady(Video[] videoList) {
+        if(videoList == null)return;
         mListener.saveVideoList(videoList);
         //List<Video> unseen = findUnseenVideos();
         videos = videoList;
+        refresh = true;
+        handleClick(refreshDelay);
         setVideos();
+
     }
 
     @Override
@@ -232,4 +258,32 @@ public class VideoListFragment extends Fragment implements VideoClickListener,Vi
         return null;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_refresh_video:
+                if(!refresh){
+                    getVideos(false);
+                }else{
+                    Toast.makeText(getActivity(),getResources().getString(R.string.toast_message_no_new_videos),Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    private void handleClick(int milisec){
+        this.refresh=true;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                refresh = false;
+            }
+        },milisec);
+    }
 }

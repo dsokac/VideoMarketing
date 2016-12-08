@@ -188,6 +188,7 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
                     setVideoLike(0);
                     video.setSeen(1);
                     mListener.onVideoEnded(video);
+                    Toast.makeText(getActivity(),getResources().getString(R.string.toast_message_view_count),Toast.LENGTH_SHORT).show();
                     log("video ended>view count");
                 }
                 seekContainer.setVisibility(View.INVISIBLE);
@@ -260,7 +261,8 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
                     }
                 }
             });
-            dialog.show(getActivity().getSupportFragmentManager(),"PlayVideoFragmentDialog");
+            log("crash time>");
+            if(isResumed())dialog.show(getActivity().getSupportFragmentManager(),"PlayVideoFragmentDialog");
         }
     }
 

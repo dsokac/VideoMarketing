@@ -89,7 +89,7 @@ public abstract class WebService extends AsyncTask<Void,Void,Void> implements We
         }
         String url =service+convertParamToUrl();
 
-        log("url: "+url);
+        //log("url: "+url);
         try {
             urlC = new URL(url);
             httpURLConnection = (HttpURLConnection) urlC.openConnection();
@@ -104,7 +104,7 @@ public abstract class WebService extends AsyncTask<Void,Void,Void> implements We
             bufferReader.close();
             is.close();
             retrievedData = strngBuffer.toString();
-            log("result>"+retrievedData);
+            //log("result>"+retrievedData);
             return new JSONObject(retrievedData);
         } catch (MalformedURLException e) {
             throw new WebServiceException(WebServiceException.WRONG_SERVICE_PATH,e);
@@ -156,6 +156,7 @@ public abstract class WebService extends AsyncTask<Void,Void,Void> implements We
             else {
                 progressDialog.setMessage(message);
             }
+            progressDialog.setCancelable(false);
         }else {
             progressDialog = null;
         }
@@ -165,7 +166,7 @@ public abstract class WebService extends AsyncTask<Void,Void,Void> implements We
         this.closeProgresssDialog = closeProgresssDialog;
     }
     protected void closeProgresssDialog(){
-        if(progressDialog != null){
+        if(progressDialog != null && progressDialog.isShowing()){
             progressDialog.dismiss();
         }
     }
