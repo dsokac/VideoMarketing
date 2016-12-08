@@ -1,7 +1,8 @@
 package hr.videomarketing.MyWebService.Services;
 
-import android.content.Context;
+import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,10 +10,7 @@ import hr.videomarketing.Models.BaseModel.User;
 import hr.videomarketing.Models.BaseModel.UserStatus;
 import hr.videomarketing.MyWebService.Interfaces.OnUserStatusInteractionService;
 import hr.videomarketing.MyWebService.Utils.Param;
-import hr.videomarketing.MyWebService.Utils.WebServiceException;
 import hr.videomarketing.MyWebService.VideoMarketingWebService;
-
-import static hr.videomarketing.MyWebService.Services.UserStatusService.URLParam.PROVIDER;
 import static hr.videomarketing.MyWebService.Services.UserStatusService.URLParam.USER;
 
 /**
@@ -24,32 +22,21 @@ public class UserStatusService extends VideoMarketingWebService {
     OnUserStatusInteractionService myListener;
     User user = null;
 
-    public UserStatusService(OnUserStatusInteractionService myListener, User user, String providerCode) {
+    public UserStatusService(OnUserStatusInteractionService myListener,User user) {
+        super(myListener);
         this.myListener = myListener;
         this.user = user;
-        setParams(user,providerCode);
+        setParams(user);
     }
-    public UserStatusService(OnUserStatusInteractionService myListener,User user,String providerCode,String progresBar) {
-        this.myListener = myListener;
-        this.user = user;
-        setParams(user,providerCode);
-        setProgressDialog(getContext(),progresBar);
-    }
-    public void setParams(User user, String telecomOperatorId){
+    public void setParams(User user){
         this.params = new Param[]{
-                new Param(USER,Long.toString(user.getId())),
-                new Param(PROVIDER,telecomOperatorId)
+                new Param(USER,Long.toString(user.getId()))
         };
     }
 
     @Override
     public String getVideoMarketingServicePath() {
-        return "current_user_points";
-    }
-
-    @Override
-    protected Context getContext() {
-        return getContextFromListener(myListener);
+        return "points_per_month";
     }
 
     @Override
@@ -63,16 +50,16 @@ public class UserStatusService extends VideoMarketingWebService {
             onListenerNull(this);
         }
         try{
-            JSONObject data = result.getJSONObject("data");
-            UserStatus status = UserStatus.newInstance(data,user);
-            myListener.onUserStatusService(status);
+            JSONArray data = result.getJSONArray("data");
+            user.setStatus(data);
+            myListener.onUserStatusService(user);
         }catch (JSONException js){
            onJSONConversionError(js);
+            Toast.makeText(getContext(),"Nema podataka za trazenog korisnika",Toast.LENGTH_SHORT).show();
         }
     }
 
     public final static class URLParam{
-        public final static String USER="user_id";
-        public final static String PROVIDER = "telecomm_operator";
+        public final static String USER="user";
     }
 }

@@ -9,6 +9,8 @@ import android.view.ContextMenu;
 import android.view.View;
 import android.widget.EditText;
 
+import hr.videomarketing.VideoMarketingApp;
+
 import static hr.videomarketing.VideoMarketingApp.PROVIDER;
 
 /**
@@ -41,6 +43,7 @@ public class MyEditText extends EditText {
                         context.getResources().getColor(PROVIDER.getColors().getLinesColor()), PorterDuff.Mode.SRC_IN));
                 this.setBackground(nd);
             }
+
         }
     }
 }

@@ -17,11 +17,6 @@ public class VideoSeenService extends VideoInteractionService {
         super(myListener);
         setParams(userId,videoId);
     }
-    public VideoSeenService(OnVideoInteractionService myListener,String userId,String videoId,String progressBar) {
-        super(myListener);
-        setParams(userId,videoId);
-        setProgressDialog(getContext(),progressBar);
-    }
 
     @Override
     public String getVideoMarketingServicePath() {

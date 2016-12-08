@@ -16,12 +16,8 @@ public abstract class VideoInteractionService extends VideoMarketingWebService {
     OnVideoInteractionService myListener;
 
     public VideoInteractionService(OnVideoInteractionService myListener){
+        super(myListener);
         this.myListener = myListener;
-    }
-
-    @Override
-    protected Context getContext() {
-        return getContextFromListener(myListener);
     }
 
     @Override

@@ -12,13 +12,14 @@ import hr.videomarketing.Models.Converts;
  * Created by bagy on 24.11.2016..
  */
 
-public class VideoComment{
+public class VideoComment implements Converts{
     private long id;
     private Author author;
     private String content;
     private String created_at;
 
     public VideoComment() {
+        createNullDefinedObject();
     }
 
     public VideoComment(long id, Author author, String content, String created_at) {
@@ -70,5 +71,25 @@ public class VideoComment{
         return comment;
     }
 
+    @Override
+    public String toJSON() {
+        return !this.isNullObject()?"{\"id\":"+Long.toString(id)+
+        ", \"author\":\""+author.toJSON()+
+        ", \"content\":\""+content+'\"'+
+        ", \"created_at\":\""+created_at+'\"'+ "}":"";
+    }
 
+    @Override
+    public VideoComment createNullDefinedObject() {
+        setId(0);
+        setAuthor(new Author());
+        setContent("");
+        setCreated_at("");
+        return this;
+    }
+
+    @Override
+    public boolean isNullObject() {
+        return this.equals(new VideoComment());
+    }
 }

@@ -1,13 +1,10 @@
 package hr.videomarketing.MyWebService.Services;
 
-import android.content.Context;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import hr.videomarketing.MyWebService.Interfaces.OnUpdateUserProviderService;
 import hr.videomarketing.MyWebService.Utils.Param;
-import hr.videomarketing.MyWebService.Utils.WebServiceException;
 import hr.videomarketing.MyWebService.VideoMarketingWebService;
 
 /**
@@ -22,24 +19,14 @@ public class UpdateUserProvider extends VideoMarketingWebService {
     private String progresDialogMessage;
 
     public UpdateUserProvider(OnUpdateUserProviderService myListener, String userId, String providerCode) {
+        super(myListener);
         this.myListener = myListener;
-        this.params = setParam(userId,providerCode);
-    }
-
-    public UpdateUserProvider(OnUpdateUserProviderService myListener, String userId, String providerCode, String progresDialogMessage) {
-        this.myListener = myListener;
-        this.params = setParam(userId,providerCode);
-        this.progresDialogMessage = progresDialogMessage;
+        setParam(userId,providerCode);
     }
 
     @Override
     public String getVideoMarketingServicePath() {
         return "change_telecomm";
-    }
-
-    @Override
-    protected Context getContext() {
-        return getContextFromListener(myListener);
     }
 
     @Override
@@ -65,8 +52,8 @@ public class UpdateUserProvider extends VideoMarketingWebService {
     protected Param[] serviceParam() {
         return params;
     }
-    private Param[] setParam(String userId,String providerCode){
-        return new Param[]{
+    private void setParam(String userId,String providerCode){
+        this.params= new Param[]{
                 new Param(PARAM_USER,userId),
                 new Param(PARAM_PROVIDER,providerCode)
         };

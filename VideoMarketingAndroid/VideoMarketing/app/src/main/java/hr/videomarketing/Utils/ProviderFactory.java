@@ -9,4 +9,7 @@ public abstract class ProviderFactory {
     public abstract ProviderLogo getLogos();
     public abstract String getCode();
     public abstract int getButtonColors();
+    public abstract String getLink();
+    public abstract int backgroundPhotoLeft();
+    public abstract int backgroundPhotoRight();
 }

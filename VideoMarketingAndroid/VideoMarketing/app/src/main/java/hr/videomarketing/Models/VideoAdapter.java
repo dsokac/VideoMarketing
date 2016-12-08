@@ -1,21 +1,16 @@
 package hr.videomarketing.Models;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import hr.videomarketing.CustomViews.MyVideoView;
-import hr.videomarketing.DMVideoView.DMWebVideoView;
 import hr.videomarketing.Models.BaseModel.Video;
 import hr.videomarketing.R;
 import hr.videomarketing.Utils.VideoClickListener;
@@ -26,8 +21,6 @@ import hr.videomarketing.VideoMarketingApp;
  */
 
 public class VideoAdapter extends BaseAdapter{
-
-
     public class VideoViewHolder{
         MyVideoView myVideoView;
     }
@@ -35,7 +28,6 @@ public class VideoAdapter extends BaseAdapter{
     Context context;
     Video[] videos = null;
     VideoClickListener videoListener;
-    VideoViewHolder holder;
     public VideoAdapter(Context context, Video[] data){
         this.context = context;
         //this.videoListener = list;
@@ -74,9 +66,8 @@ public class VideoAdapter extends BaseAdapter{
 
             viewHolder = new VideoViewHolder();
             viewHolder.myVideoView = new MyVideoView(context);
-            viewHolder.myVideoView.videoView = (DMWebVideoView) convertView.findViewById(R.id.customVideoView);
-            viewHolder.myVideoView.tvLabel = (TextView) convertView.findViewById(R.id.twVideoLabel);
-
+            viewHolder.myVideoView.setVideoView((ImageButton) convertView.findViewById(R.id.customVideoView));
+            viewHolder.myVideoView.setTvLabel((TextView)convertView.findViewById(R.id.twVideoLabel));
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
             viewHolder.myVideoView.setLayoutParams(params);
 
@@ -88,22 +79,12 @@ public class VideoAdapter extends BaseAdapter{
             viewHolder = (VideoViewHolder)convertView.getTag();
         }
         if(video != null){
-            viewHolder.myVideoView.tvLabel.setText(video.getTitle());
-            viewHolder.myVideoView.setViewListener(videoListener);
-            viewHolder.myVideoView.videoView.setVideo(video);
-            viewHolder.myVideoView.videoView.load();
-            viewHolder.myVideoView.videoView.setEventListener(new DMWebVideoView.Listener() {
+            viewHolder.myVideoView.setVideo(video);
+            viewHolder.myVideoView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onEvent(String event) {
-                    switch (event){
-                        case "play":
-                            videoListener.onVideoSelected(viewHolder.myVideoView.videoView.getVideo());
-                            break;
-                        case "start":
-                            if(videoListener !=null){
-                                videoListener.onVideoSelected(viewHolder.myVideoView.videoView.getVideo());
-                            }
-                            break;
+                public void onClick(View view) {
+                    if(videoListener != null){
+                        videoListener.onVideoSelected(viewHolder.myVideoView.getVideo());
                     }
                 }
             });

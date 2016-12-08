@@ -1,7 +1,9 @@
 package hr.videomarketing.Models.BaseModel;
 
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.widget.ImageButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,9 +14,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import hr.videomarketing.DMVideoView.DMWebVideoView;
 import hr.videomarketing.Models.Converts;
+import hr.videomarketing.MyWebService.DownloadVideoThumbnail;
+import hr.videomarketing.MyWebService.Interfaces.OnVideoThumbnailDownloaded;
+import hr.videomarketing.R;
+import hr.videomarketing.VideoMarketingApp;
 
+import static hr.videomarketing.VideoMarketingApp.ACTIVE_FRAGMENT;
+import static hr.videomarketing.VideoMarketingApp.HomeActivity;
 import static hr.videomarketing.VideoMarketingApp.log;
 
 /**
@@ -32,12 +39,31 @@ public class Video implements Converts{
     private int sponsored;
     private int seen;
     private int user_like;
+    private String thumbnail_url;
+    private Bitmap thumbnail;
     private String created_at;
+    List<OnVideoThumbnailDownloaded> list;
     public Video(){
-
+        createNullDefinedObject();
     }
 
-    public Video(int id, String title, String link, int likes, int dislikes, int points, int seen, int sponsored, String created_at, int user_like) {
+    public Video(int id, String dmId, String title, String link, int likes, int dislikes, int points, int sponsored, int seen, int user_like, String thumbnail_url, Bitmap thumbnail, String created_at) {
+        this.id = id;
+        this.dmId = dmId;
+        this.title = title;
+        this.link = link;
+        this.likes = likes;
+        this.dislikes = dislikes;
+        this.points = points;
+        this.sponsored = sponsored;
+        this.seen = seen;
+        this.user_like = user_like;
+        this.thumbnail_url = thumbnail_url;
+        this.thumbnail = thumbnail;
+        this.created_at = created_at;
+    }
+
+    public Video(int id, String title, String link, int likes, int dislikes, int points, int seen, int sponsored, String created_at, int user_like, String thumbnail_url) {
         this.id = id;
         this.title = title;
         this.link = link;
@@ -48,6 +74,7 @@ public class Video implements Converts{
         this.seen = seen;
         this.sponsored = sponsored;
         this.created_at = created_at;
+        this.thumbnail_url = thumbnail_url;
     }
     public static Video newInstance(String json) {
         try {
@@ -59,8 +86,8 @@ public class Video implements Converts{
     }
 
     public static Video newInstance(JSONObject json) {
+        Video video = new Video();
         if(json.length() > 0){
-            Video video = new Video();
             try {
                 video.setId(json.getInt("id"));
                 video.setTitle(json.getString("title"));
@@ -71,13 +98,14 @@ public class Video implements Converts{
                 video.setSeen(json.getInt("seen"));
                 video.setUserLike(json.getInt("user_like"));
                 video.setSponsored(json.getInt("sponsored"));
+                video.setThumbnailUrl(json.getString("thumbnail_url"));
                 video.setCreated_at(json.getString("created_at"));
                 return video;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        return null;
+        return new Video().createNullDefinedObject();
     }
     public int getId() {
         return id;
@@ -91,8 +119,16 @@ public class Video implements Converts{
         return title;
     }
 
+    public List<OnVideoThumbnailDownloaded> getMyView(){
+        return list;
+    }
+
+
     public void setTitle(String title) {
         this.title = title;
+    }
+    public void setDmId(String dmId){
+        this.dmId = dmId;
     }
 
     public String getLink() {
@@ -107,6 +143,27 @@ public class Video implements Converts{
         if(match1.find()){
             this.dmId = match1.group();
         }
+    }
+
+
+    public void setMyViewListener(OnVideoThumbnailDownloaded l){
+        this.list.add(l);
+    }
+
+    public void setThumbnail(Bitmap thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public Bitmap getThumbnail() {
+        return thumbnail;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnail_url;
+    }
+
+    public void setThumbnailUrl(String thumbnail_url) {
+        this.thumbnail_url = thumbnail_url;
     }
 
     public int getLikes() {
@@ -176,6 +233,7 @@ public class Video implements Converts{
         if (getId() != video.getId()) return false;
         if (!getTitle().equals(video.getTitle())) return false;
         if (!getLink().equals(video.getLink())) return false;
+        if (!getDmID().equals(video.getDmID()))return false;
         return getCreated_at() != null ? getCreated_at().equals(video.getCreated_at()) : video.getCreated_at() == null;
 
     }
@@ -190,6 +248,10 @@ public class Video implements Converts{
 
     @Override
     public String toString() {
+        String foo = title;
+        if(foo.contains("\"")){
+            title = foo.replace("\"","");
+        }
         return "{" +
                 "\"id\":" + id +
                 ", \"dmId\":\""+dmId+'\"'+
@@ -201,6 +263,7 @@ public class Video implements Converts{
                 ", \"dislikes\":\"" + dislikes + '\"' +
                 ", \"points\":\"" + points + '\"' +
                 ", \"sponsored\":\""+sponsored+'\"'+
+                ", \"thumbnail_url\":\""+thumbnail_url+'\"'+
                 ", \"created_at\":\"" + created_at + '\"' +
                 '}';
     }
@@ -215,9 +278,38 @@ public class Video implements Converts{
         }
         return list;
     }
+    private void setListenerList(List<OnVideoThumbnailDownloaded> list){
+        this.list = list;
+    }
 
     @Override
     public String toJSON() {
+
         return toString();
+    }
+
+    @Override
+    public Video createNullDefinedObject() {
+        setId(0);
+        setTitle("");
+        setLink("");
+        setDmId("");
+        setUserLike(0);
+        setSeen(0);
+        setUserLike(0);
+        setLikes(0);
+        setListenerList(new ArrayList<OnVideoThumbnailDownloaded>());
+        return this;
+    }
+
+    @Override
+    public boolean isNullObject() {
+        return equals(new Video().createNullDefinedObject());
+    }
+
+    public void thumbnailDownloaded() {
+        for (OnVideoThumbnailDownloaded l:list) {
+            l.onImageDownloadedSuccessful();
+        }
     }
 }

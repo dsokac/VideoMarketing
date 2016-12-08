@@ -15,7 +15,7 @@ public class Author implements Converts{
     private String surname;
 
     public Author() {
-
+        createNullDefinedObject();
     }
 
     public Author(long id, String name, String surname) {
@@ -58,11 +58,43 @@ public class Author implements Converts{
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Author author = (Author) o;
+
+        if (getId() != author.getId()) return false;
+        if (!getName().equals(author.getName())) return false;
+        return getSurname().equals(author.getSurname());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (getId() ^ (getId() >>> 32));
+    }
+
+    @Override
     public String toJSON() {
         return "Author{" +
                 "\"id\":" + id +
                 ", \"name\":\"" + name + '\"'+
                 ",\"surname\":\"" + surname + '\"' +
                 "}";
+    }
+
+
+    @Override
+    public Author createNullDefinedObject() {
+        setId(0);
+        setName("");
+        setSurname("");
+        return this;
+    }
+
+    @Override
+    public boolean isNullObject() {
+        return this.equals(new Author().createNullDefinedObject());
     }
 }

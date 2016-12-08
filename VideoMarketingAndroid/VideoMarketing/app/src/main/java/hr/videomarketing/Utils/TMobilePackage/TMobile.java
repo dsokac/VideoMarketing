@@ -1,5 +1,6 @@
 package hr.videomarketing.Utils.TMobilePackage;
 
+import hr.videomarketing.R;
 import hr.videomarketing.Utils.ProviderColors;
 import hr.videomarketing.Utils.ProviderFactory;
 import hr.videomarketing.Utils.ProviderLogo;
@@ -29,5 +30,20 @@ public class TMobile extends ProviderFactory {
     @Override
     public int getButtonColors() {
         return new TMobileColors().getToolbarColor();
+    }
+
+    @Override
+    public String getLink() {
+        return "https://www.hrvatskitelekom.hr/";
+    }
+
+    @Override
+    public int backgroundPhotoLeft() {
+        return R.drawable.button_background_left_tmobile;
+    }
+
+    @Override
+    public int backgroundPhotoRight() {
+        return R.drawable.button_background_right_tmobile;
     }
 }

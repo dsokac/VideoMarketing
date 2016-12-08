@@ -7,19 +7,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import hr.videomarketing.Models.BaseModel.User;
 import hr.videomarketing.Models.BaseModel.Video;
 import hr.videomarketing.Models.VideoAdapter;
-import hr.videomarketing.MyWebService.Interfaces.VideoListInteractionService;
-import hr.videomarketing.MyWebService.Services.VideoListService;
 import hr.videomarketing.R;
 import hr.videomarketing.Utils.VideoClickListener;
+import hr.videomarketing.Utils.VideoTransfer;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,13 +26,14 @@ import hr.videomarketing.Utils.VideoClickListener;
  * Use the {@link VideoListLikedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VideoListLikedFragment extends Fragment implements VideoListInteractionService,VideoClickListener {
+public class VideoListLikedFragment extends Fragment implements VideoClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_USER = "hr.videomarket.videos";
     private User user;
-    private List<Video> likedVideos = null;
+    private Video[] likedVideos = null;
     private GridView grid = null;
+    private FrameLayout frameLayout;
 
     private OnFragmentInteractionListener mListener;
 
@@ -70,6 +68,9 @@ public class VideoListLikedFragment extends Fragment implements VideoListInterac
         super.onViewCreated(view, savedInstanceState);
 
         grid = (GridView)view.findViewById(R.id.gridLiked);
+        frameLayout = (FrameLayout)view.findViewById(R.id.container);
+        likedVideos = mListener.getVideos("liked");
+        setGridView();
     }
 
     @Override
@@ -77,10 +78,6 @@ public class VideoListLikedFragment extends Fragment implements VideoListInterac
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
-            if(this.user != null)
-            {
-                new VideoListService(this.user.getId(),this,getResources().getString(R.string.message_get_videos)).execute();
-            }
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -93,30 +90,16 @@ public class VideoListLikedFragment extends Fragment implements VideoListInterac
         mListener = null;
     }
 
-    @Override
-    public void onVideosReady(List<Video> videoList) {
-        if(videoList !=null && videoList.size()>0){
-            this.likedVideos = new ArrayList<>();
-            for (Video vid:videoList) {
-                if(vid.getUserLike() == 1){
-                    this.likedVideos.add(vid);
-                }
-            }
-            setGridView();
-        }
-        else {
-            TextView txt = new TextView(getActivity());
-            txt.setText("Nemate lajkanih videa");
-            grid.addView(txt);
-        }
-    }
-
     private void setGridView() {
-        if(likedVideos !=null){
-            Video[] vid = likedVideos.toArray(new Video[likedVideos.size()]);
-            VideoAdapter videoAdapter = new VideoAdapter(getActivity(),vid);
+        if(likedVideos !=null && grid !=null && likedVideos.length>0){
+            VideoAdapter videoAdapter = new VideoAdapter(getActivity(),likedVideos);
             videoAdapter.setVideoSelectedListener(this);
             grid.setAdapter(videoAdapter);
+        }
+        else{
+            TextView txt = new TextView(getActivity());
+            txt.setText("Nemate lajkanih videa");
+            frameLayout.addView(txt);
         }
     }
 
@@ -125,7 +108,7 @@ public class VideoListLikedFragment extends Fragment implements VideoListInterac
         mListener.onLikedVideoClick(selectedVideo);
     }
 
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener extends VideoTransfer {
         void onLikedVideoClick(Video video);
     }
 }

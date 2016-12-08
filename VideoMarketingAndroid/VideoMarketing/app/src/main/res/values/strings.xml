@@ -85,8 +85,6 @@
     <string name="lblRecommend">Top preporuka</string>
 
     <string name="title_activity_play_video">Play</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="lblMonth">Mjesec</string>
     <string name="lblPointStatus">Stanje bodova</string>
     <string name="lblUsedPoints">Potrošeni bodovi</string>
@@ -97,16 +95,37 @@
     <string name="lbl_bottom_bar_Points">Bodovi</string>
     <string name="lbl_bottom_bar_Likes">Sviđa mi se</string>
     <string name="lbl_bottom_bar_Seen">Pogledano</string>
-    <string name="action_search">Pretraži</string>
+    <string name="action_save">Spremi</string>
     <string name="logotip_aplikacije">Logotip Aplikacije</string>
     <string name="logotip_operatera">Logotip operatera</string>
     <string name="btnDoRegistrationContentDescr">Registracija</string>
     <string name="message_search_not_implemented">Pretrazivanje nije moguce</string>
     <string name="lblBackToVideo">Natrag na video</string>
     <string name="back_button_desc">Natrag</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="etCommentsHint">Komentar</string>
+    <string name="etPhoneNumberLabel">Broj vašeg mobitela...</string>
+    <string name="etPhoneNumberHint">+385...</string>
+    <string name="lblRetypePassword" >Ponovite lozinku</string>
+    <string name="input_incorrect_name">Morate unijeti ime i prezime</string>
+    <string name="input_incorrect_birthday">Morate unijeti datum rođenja</string>
+    <string name="input_incorrect_email">Neispravan format emaila</string>
+    <string name="input_incorrect_username">Korisničko ime mora sadržavati 3 ili više znakova</string>
+    <string name="input_incorrect_phone_number">Format broja mobitela neispravan</string>
+    <string name="input_incorrect_password_check">Lozinke se ne podudaraju</string>
+    <string name="input_incorrect_all">Neispravan unos</string>
+    <string name="action_check_number">Provjera jel postoji korisnik sa unesenim brojem mobitela</string>
+    <string name="message_user_update">Korisnički podaci su promijenjeni, a nisu spremljeni. Želite li spremiti promijene?</string>
+    <string name="alert_dialog_save_changes">Spremi</string>
+    <string name="alert_dialog_dont_save_changes" />
+    <string name="action_exit">Izlaz</string>
+    <string name="alert_dialog_message_exit">Jeste li sigurni da želite izaći iz aplikacije?</string>
+    <string name="alert_dialog_message_negative">Odustani</string>
+    <string name="input_incorrect_password">Morate unijeti lozinku koja sadrži barem 6 znakova</string>
+    <string name="message_video_loading">Učitavanje videa</string>
+    <string name="message_my_dialog_content">U slučaju premotavanja videa, bodovi za pogledan video se neće računati</string>
+    <string name="message_dialog_checkbox">Ne prikazuj obavijest</string>
+    <string name="alert_dialog_ok">OK</string>
+    <string name="message_view_not_count">Bodovi za prikazani video se neće računati</string>
+    <string name="lblSeek">Vrati natrag</string>
 
 </resources>

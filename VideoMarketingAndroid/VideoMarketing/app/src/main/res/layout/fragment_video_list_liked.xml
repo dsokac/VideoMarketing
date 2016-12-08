@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/container"
     tools:context="hr.videomarketing.Fragments.VideoListLikedFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -11,5 +12,7 @@
         android:layout_height="match_parent"
         android:numColumns="2"
         android:id="@+id/gridLiked"
-        android:stretchMode="columnWidth" />
+        android:stretchMode="columnWidth"
+        android:paddingLeft="13dp"
+        android:paddingRight="10dp" />
 </FrameLayout>

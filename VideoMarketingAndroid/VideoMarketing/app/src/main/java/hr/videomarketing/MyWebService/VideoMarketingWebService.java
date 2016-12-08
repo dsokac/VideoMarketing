@@ -24,6 +24,12 @@ import static hr.videomarketing.MyWebService.Utils.WebServiceException.WRONG_SER
 
 public abstract class VideoMarketingWebService extends WebService implements ConversionFailed{
     private final String SERVER_PATH="http://www.videomarketdemo.esy.es/webservice/";
+    Context context = null;
+
+    public VideoMarketingWebService(Object obj){
+        getContextFromListener(obj);
+    }
+
     @Override
     public String serviceName() {
         return SERVER_PATH+getVideoMarketingServicePath();
@@ -32,27 +38,28 @@ public abstract class VideoMarketingWebService extends WebService implements Con
         Log.i("VideoMarketingApp","bagy94>Services>"+text);
     }
     public abstract String getVideoMarketingServicePath();
-    protected Context getContextFromListener(Object object){
-        if(object instanceof Fragment) return ((Fragment) object).getActivity();
-        else if(object instanceof Activity)return (Activity)object;
-        else if(object instanceof Context)return (Context)object;
-        return null;
+    protected void getContextFromListener(Object object){
+        if(object instanceof Fragment) {
+            context = ((Fragment) object).getActivity();
+        }
+        else if(object instanceof Activity){
+            context = (Activity)object;
+        }
+        else if(object instanceof Context){
+            context = (Context)object;
+        }
     }
 
     @Override
     protected void serviceUnsuccessful(WebServiceException error,String retrievedData) {
         if(error.equals(NO_INTERNET_CONNECTION)){
             log("WebServiceException>no internet connection");
-            Toast.makeText(getContext(),"Provjerite internet konekciju",Toast.LENGTH_LONG).show();
-
         }
         else if(error.equals(ERROR_ON_READING_DATA)){
             log("WebServiceException>data reading error");
-            Toast.makeText(getContext(),"Greška prilikom čitanja dohvaćenih podataka, molimo pokušajte ponovno",Toast.LENGTH_LONG).show();
         }
         else if(error.equals(WRONG_SERVICE_PATH)){
             log("WebServiceException>Service isn't correct");
-            Toast.makeText(getContext(),"Servis neispravan",Toast.LENGTH_LONG).show();
         }
         else if(error.equals(CONVERT_TO_JSON_EXCEPTION)){
             log("WebServiceException>casting to json incorrect, check received data: "+retrievedData);
@@ -79,5 +86,8 @@ public abstract class VideoMarketingWebService extends WebService implements Con
         }
     }
 
-    protected abstract Context getContext();
+    @Override
+    public Context getContext() {
+        return context;
+    }
 }

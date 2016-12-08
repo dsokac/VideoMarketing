@@ -8,11 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import hr.videomarketing.CustomViews.MyVideoViewIcon;
-import hr.videomarketing.DMVideoView.DMWebVideoView;
 import hr.videomarketing.Models.BaseModel.Video;
 import hr.videomarketing.R;
 import hr.videomarketing.Utils.VideoClickListener;
@@ -82,7 +82,7 @@ public class VideoAdapterOldVid extends BaseAdapter implements VideoClickListene
 
             holder = new VideoAdapterOldVid.VideoViewHolder();
             holder.myVideoView = new MyVideoViewIcon(context);
-            holder.myVideoView.videoView = (DMWebVideoView) convertView.findViewById(R.id.customVideoView);
+            holder.myVideoView.videoView = (ImageButton) convertView.findViewById(R.id.customVideoView);
             holder.myVideoView.tvLabel = (TextView) convertView.findViewById(R.id.twVideoLabel);
             holder.myVideoView.iconStatus = (ImageView)convertView.findViewById(R.id.myCustomVIewIcon);
             log("Video: ");
@@ -93,9 +93,7 @@ public class VideoAdapterOldVid extends BaseAdapter implements VideoClickListene
         Video video = videos[position];
         if (video != null) {
             holder.myVideoView.tvLabel.setText(video.getTitle());
-            holder.myVideoView.setViewListener(videoListener);
-            holder.myVideoView.videoView.setVideo(video);
-            holder.myVideoView.videoView.load();
+
             //TODO:magic
         }
         return convertView;

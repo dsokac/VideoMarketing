@@ -1,16 +1,21 @@
 package hr.videomarketing.Models.BaseModel;
 
+import hr.videomarketing.Models.Converts;
+
 /**
  * Created by bagy on 31.10.2016..
  */
 
-public class GeographicUnits {
+public class GeographicUnits implements Converts{
     private int id;
     private String name;
 
     public GeographicUnits(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+    public GeographicUnits(){
+        createNullDefinedObject();
     }
 
     @Override
@@ -51,5 +56,22 @@ public class GeographicUnits {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toJSON() {
+        return null;
+    }
+
+    @Override
+    public GeographicUnits createNullDefinedObject() {
+        setId(0);
+        setName("");
+        return this;
+    }
+
+    @Override
+    public boolean isNullObject() {
+        return equals(new GeographicUnits());
     }
 }

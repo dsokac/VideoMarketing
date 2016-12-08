@@ -1,7 +1,5 @@
 package hr.videomarketing.MyWebService.Services;
 
-import android.content.Context;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,7 +8,6 @@ import java.util.List;
 import hr.videomarketing.Models.BaseModel.User;
 import hr.videomarketing.MyWebService.Interfaces.OnUpdateUserService;
 import hr.videomarketing.MyWebService.Utils.Param;
-import hr.videomarketing.MyWebService.Utils.WebServiceException;
 import hr.videomarketing.MyWebService.VideoMarketingWebService;
 
 /**
@@ -21,23 +18,14 @@ public class UpdateUserService extends VideoMarketingWebService {
     Param[] params;
     OnUpdateUserService myListener;
     public UpdateUserService(OnUpdateUserService l, User user){
+        super(l);
         this.myListener = l;
         setUser(user);
-    }
-    public UpdateUserService(OnUpdateUserService l, User user, String progressDialogMessage){
-        this.myListener = l;
-        setUser(user);
-        setProgressDialog(getContext(),progressDialogMessage);
     }
 
     @Override
     public String getVideoMarketingServicePath() {
         return "updateuser";
-    }
-
-    @Override
-    protected Context getContext() {
-        return getContextFromListener(myListener);
     }
 
     @Override

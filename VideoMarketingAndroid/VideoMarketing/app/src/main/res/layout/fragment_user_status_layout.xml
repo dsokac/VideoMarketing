@@ -126,7 +126,39 @@
             app:layout_constraintTop_toBottomOf="@+id/twUsedPoints"
             android:layout_marginTop="8dp"
             app:layout_constraintLeft_toLeftOf="@+id/twUsedPoints"
-            app:layout_constraintRight_toRightOf="@+id/twUsedPoints" />
+            app:layout_constraintRight_toRightOf="@+id/twUsedPoints"
+            android:focusable="false" />
+
+        <RelativeLayout
+            android:layout_width="384dp"
+            android:layout_height="118dp"
+            tools:layout_editor_absoluteX="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/etPointStatus"
+            android:id="@+id/buttonContainer"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="16dp">
+
+            <ImageButton
+                android:layout_height="120dp"
+                app:srcCompat="@drawable/ic_shopping_cart_black_24dp"
+                android:id="@+id/imgbtnWebShop"
+                android:background="@drawable/buttons_background_left"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_width="180dp" />
+
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/ic_person_black_24dp"
+                android:id="@+id/imgBtnPersonal"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/imgbtnWebShop"
+                android:background="@drawable/button_background_right"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="-1dp" />
+        </RelativeLayout>
 
 
     </android.support.constraint.ConstraintLayout>

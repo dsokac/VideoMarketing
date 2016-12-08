@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,12 +33,17 @@ public abstract class WebService extends AsyncTask<Void,Void,Void> implements We
     private BufferedReader bufferReader;
     private Param[] params ;
     private ProgressDialog progressDialog;
-    private JSONObject result=null;
-    private String retrievedData=null;
+    protected JSONObject result=null;
+    protected String retrievedData=null;
+    private boolean closeProgresssDialog = true;
     private WebServiceException error = null;
     @Override
     protected Void doInBackground(Void... voids) {
         try {
+            if(getContext() != null && !haveNetworkconnection(getContext())){
+                serviceUnsuccessful(new WebServiceException(WebServiceException.NO_INTERNET_CONNECTION),"");
+                return null;
+            }
             result = GET();
         }catch (WebServiceException e){
             error = e;
@@ -59,7 +65,7 @@ public abstract class WebService extends AsyncTask<Void,Void,Void> implements We
     @Override
     protected void onPostExecute(Void o) {
         super.onPostExecute(o);
-        if(progressDialog !=null){
+        if(progressDialog !=null && closeProgresssDialog){
             progressDialog.dismiss();
         }
         if(result != null){
@@ -84,7 +90,6 @@ public abstract class WebService extends AsyncTask<Void,Void,Void> implements We
         String url =service+convertParamToUrl();
 
         log("url: "+url);
-
         try {
             urlC = new URL(url);
             httpURLConnection = (HttpURLConnection) urlC.openConnection();
@@ -113,7 +118,8 @@ public abstract class WebService extends AsyncTask<Void,Void,Void> implements We
             httpURLConnection.disconnect();
         }
     }
-    public static boolean haveNetworkconnection(Context context){
+
+    public boolean haveNetworkconnection(Context context){
         boolean haveWifi = false;
         boolean haveMobileConnection = false;
         ConnectivityManager conManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -141,15 +147,26 @@ public abstract class WebService extends AsyncTask<Void,Void,Void> implements We
         }
         return url;
     }
-    public void setProgressDialog(Context context, String message){
-        if(context != null){
-            progressDialog = new ProgressDialog(context);
+    public void setProgressDialog(String message){
+        if(getContext() != null){
+            progressDialog = new ProgressDialog(getContext());
             if(message.equals("") || message == null){
                 progressDialog.setMessage("Dohvaćam podatke");
             }
             else {
                 progressDialog.setMessage(message);
             }
+        }else {
+            progressDialog = null;
+        }
+    }
+    public void setProgressDialog(String message, boolean closeProgresssDialog){
+        setProgressDialog(message);
+        this.closeProgresssDialog = closeProgresssDialog;
+    }
+    protected void closeProgresssDialog(){
+        if(progressDialog != null){
+            progressDialog.dismiss();
         }
     }
     protected void log(String text){

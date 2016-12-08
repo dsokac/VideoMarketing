@@ -1,7 +1,5 @@
 package hr.videomarketing.MyWebService.Services;
 
-import android.content.Context;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,7 +8,6 @@ import java.util.List;
 import hr.videomarketing.Models.BaseModel.User;
 import hr.videomarketing.MyWebService.Interfaces.RegistrationServiceInteraction;
 import hr.videomarketing.MyWebService.Utils.Param;
-import hr.videomarketing.MyWebService.Utils.WebServiceException;
 import hr.videomarketing.MyWebService.VideoMarketingWebService;
 
 /**
@@ -20,16 +17,12 @@ import hr.videomarketing.MyWebService.VideoMarketingWebService;
 public class RegistrationService extends VideoMarketingWebService {
     private Param[] params;
     RegistrationServiceInteraction myListener;
-    public RegistrationService(RegistrationServiceInteraction myListener,User user){
-        List<Param> list = user.toParam();
-        this.myListener = myListener;
-        this.params = list.toArray(new Param[list.size()]);
-    }
     public RegistrationService(RegistrationServiceInteraction myListener,User user,String progressDialogMessage){
+        super(myListener);
         List<Param> list = user.toParam();
         this.myListener = myListener;
         this.params = list.toArray(new Param[list.size()]);
-        setProgressDialog(getContextFromListener(myListener),progressDialogMessage);
+        setProgressDialog(progressDialogMessage);
     }
     @Override
     public String getVideoMarketingServicePath() {
@@ -54,11 +47,6 @@ public class RegistrationService extends VideoMarketingWebService {
         }catch (JSONException json){
             onJSONConversionError(json);
         }
-    }
-
-    @Override
-    protected Context getContext() {
-        return getContextFromListener(myListener);
     }
 
     @Override

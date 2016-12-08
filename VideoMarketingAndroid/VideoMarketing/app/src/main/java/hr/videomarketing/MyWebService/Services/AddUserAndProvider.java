@@ -29,6 +29,7 @@ public class AddUserAndProvider extends VideoMarketingWebService {
 
 
     public AddUserAndProvider(OnUpdateUserProviderService myListener,String userID,String providerCode) {
+        super(myListener);
         this.myListener = myListener;
         this.params = new Param[]{
                 new Param(PARAM_USER,userID),
@@ -37,23 +38,19 @@ public class AddUserAndProvider extends VideoMarketingWebService {
     }
 
     public AddUserAndProvider(String userID,String providerCode, String progresDialogMessage, OnUpdateUserProviderService myListener) {
+        super(myListener);
         this.progresDialogMessage = progresDialogMessage;
         this.myListener = myListener;
         this.params = new Param[]{
                 new Param(PARAM_USER,userID),
                 new Param(PARAM_PROVIDER,providerCode)
         };
-        setProgressDialog(getContextFromListener(myListener),progresDialogMessage);
+        setProgressDialog(progresDialogMessage);
     }
 
     @Override
     public String getVideoMarketingServicePath() {
         return "add_telecomm_user";
-    }
-
-    @Override
-    protected Context getContext() {
-        return getContextFromListener(myListener);
     }
 
     @Override

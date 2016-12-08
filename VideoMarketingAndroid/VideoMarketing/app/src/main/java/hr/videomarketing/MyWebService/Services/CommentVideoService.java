@@ -21,11 +21,6 @@ public class CommentVideoService extends VideoInteractionService {
         super(myListener);
         setParams(videoId,authorId,content);
     }
-    public CommentVideoService(OnVideoInteractionService myListener,String videoId, String authorId, String content,String progressDialog) {
-        super(myListener);
-        setParams(videoId,authorId,content);
-        setProgressDialog(getContext(),progressDialog);
-    }
 
     public void setParams(String videoId, String authorId, String content){
         String con = content.replace(" ","_");

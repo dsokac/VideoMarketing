@@ -25,5 +25,6 @@
     <color name="black_overlay">#66000000</color>
     <color name="play_video_background_color">#767578</color>
     <color name="edittext_comments_color">#dfdede</color>
+    <color name="edittext_error_icon_color">#640000</color>
 
 </resources>

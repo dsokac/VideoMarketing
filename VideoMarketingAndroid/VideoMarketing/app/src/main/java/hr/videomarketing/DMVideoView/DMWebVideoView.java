@@ -8,11 +8,8 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +20,6 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.VideoView;
-
-import java.util.Set;
 
 import hr.videomarketing.Models.BaseModel.Video;
 
@@ -51,18 +46,6 @@ public class DMWebVideoView extends WebView {
         }
 
     }
-
-    public Video getVideo() {
-        return video;
-    }
-
-    public void setVideo(Video video) {
-        this.video = video;
-        setVideoId(video.getDmID());
-        setAutoPlay(false);
-    }
-
-    private Video video;
     private boolean loaded = false;
     private WebSettings mWebSettings;
     private WebChromeClient mChromeClient;
@@ -221,8 +204,8 @@ public class DMWebVideoView extends WebView {
                         case "ad_timeupdate": currentTime = Double.parseDouble(uri.getQueryParameter("time")); break;
                         case "progress": bufferedTime = Double.parseDouble(uri.getQueryParameter("time")); break;
                         case "durationchange": duration = Double.parseDouble(uri.getQueryParameter("duration")); break;
-                        case "seeking": //seeking = true; currentTime = Double.parseDouble(uri.getQueryParameter("time")); break;
-                        case "seeked": //seeking = false; currentTime = Double.parseDouble(uri.getQueryParameter("time")); break;
+                        case "seeking": seeking = true; currentTime = Double.parseDouble(uri.getQueryParameter("time")); break;
+                        case "seeked": seeking = false; currentTime = Double.parseDouble(uri.getQueryParameter("time")); break;
                         case "fullscreenchange": fullscreen = parseBooleanFromAPI(uri.getQueryParameter("fullscreen")); break;
                         case "video_start":
                         case "ad_start":

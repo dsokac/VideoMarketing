@@ -28,7 +28,7 @@ import static hr.videomarketing.VideoMarketingApp.log;
 
 public class LogInFragment extends Fragment implements Button.OnClickListener, LogInServiceInteraction {
     private final static String ARG_USER = "hr.videomarketing.userparametar";
-    private User user;
+    private User user = new User().createNullDefinedObject();
     // TODO: Rename and change types of parameters
     private MyEditText etUserName = null;
     private MyEditText etPassword = null;
@@ -55,7 +55,8 @@ public class LogInFragment extends Fragment implements Button.OnClickListener, L
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            user = User.newInstance(getArguments().getString(ARG_USER));
+            String userString = getArguments().getString(ARG_USER);
+            user = userString != null && !userString.equals("")?User.newInstance(userString):null;
         }
     }
 
@@ -70,7 +71,7 @@ public class LogInFragment extends Fragment implements Button.OnClickListener, L
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         etUserName = (MyEditText)view.findViewById(R.id.etUserName);
-        etPassword = (MyEditText)view.findViewById(R.id.etLogInPassword);
+        etPassword = (MyEditText)view.findViewById(R.id.etPassword);
         twDoRegistration = (MyEditText) view.findViewById(R.id.twDoRegistration);
         twDoRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,7 +128,7 @@ public class LogInFragment extends Fragment implements Button.OnClickListener, L
         }
         else{
             LogInService lis = new LogInService(username,password,this);
-            lis.setProgressDialog(getActivity(),getResources().getString(R.string.message_action_logIn));
+            lis.setProgressDialog(getResources().getString(R.string.message_action_logIn));
             lis.execute();
         }
     }
@@ -139,8 +140,8 @@ public class LogInFragment extends Fragment implements Button.OnClickListener, L
 
     @Override
     public void onLogInSuccessful(User user) {
-        MyFiles.writeInFile(getActivity(), MyFiles.Files.USER_DATA_FILE, user.toString());
-        user.logIn(getActivity());
+        user.setLogedIn(true);
+        MyFiles.getInstance().writeInFile(getActivity(), MyFiles.Files.USER_DATA_FILE, user.toJSON());
         mListener.userLogInSuccessful();
     }
 

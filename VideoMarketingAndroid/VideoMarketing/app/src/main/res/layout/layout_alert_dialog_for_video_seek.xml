@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/background_dialog">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialogHeader"
+        android:background="@color/color_vip_dark_red"
+        android:layout_alignParentEnd="false"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="7dp">
+
+        <ImageView
+            android:layout_width="60dp"
+            app:srcCompat="@drawable/ic_epp_vip_logotip"
+            android:id="@+id/ivAppLogoDialogHeader"
+            android:layout_height="60dp"
+            android:layout_centerInParent="false"
+            android:layout_centerHorizontal="false"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:text="@string/message_warning_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvLabelHeader"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:layout_toEndOf="@+id/ivAppLogoDialogHeader"
+            android:layout_centerInParent="true"
+            android:textSize="24sp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="8dp"
+            android:layout_centerVertical="false"
+            android:layout_centerHorizontal="false"
+            android:layout_marginBottom="5dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialogContent"
+        android:layout_below="@+id/dialogHeader"
+        android:layout_alignParentBottom="false"
+        android:layout_alignEnd="@+id/dialogHeader"
+        android:paddingLeft="12dp"
+        android:paddingRight="4dp">
+
+        <TextView
+            android:text="@string/message_my_dialog_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvContentDialog"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:layout_marginTop="7dp"
+            android:layout_alignParentLeft="true" />
+
+        <CheckBox
+            android:text="@string/message_dialog_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cbDoNotShowDialog"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentStart="false"
+            android:layout_below="@+id/tvContentDialog"
+            android:layout_marginTop="17dp"
+            android:textSize="16sp" />
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,14 +1,11 @@
 package hr.videomarketing.MyWebService.Services;
 
-import android.content.Context;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import hr.videomarketing.Models.BaseModel.User;
 import hr.videomarketing.MyWebService.Interfaces.LogInServiceInteraction;
 import hr.videomarketing.MyWebService.Utils.Param;
-import hr.videomarketing.MyWebService.Utils.WebServiceException;
 import hr.videomarketing.MyWebService.VideoMarketingWebService;
 
 import static hr.videomarketing.MyWebService.Services.LogInService.UrlParam.PASSWORD;
@@ -28,13 +25,9 @@ public class LogInService extends VideoMarketingWebService {
     LogInServiceInteraction myListener;
 
     public LogInService(String username, String password, LogInServiceInteraction myListener) {
+        super(myListener);
         setParams(username,password);
         this.myListener = myListener;
-    }
-    public LogInService(String username, String password, LogInServiceInteraction myListener,String progresDialogMessage) {
-        setParams(username,password);
-        this.myListener = myListener;
-        setProgressDialog(getContextFromListener(myListener),progresDialogMessage);
     }
     @Override
     public String getVideoMarketingServicePath() {
@@ -59,11 +52,6 @@ public class LogInService extends VideoMarketingWebService {
         }catch(JSONException jsonE) {
             onJSONConversionError(jsonE);
         }
-    }
-
-    @Override
-    protected Context getContext() {
-        return getContextFromListener(myListener);
     }
 
     @Override

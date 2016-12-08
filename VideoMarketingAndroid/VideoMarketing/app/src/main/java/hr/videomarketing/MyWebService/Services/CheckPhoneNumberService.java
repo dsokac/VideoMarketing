@@ -28,14 +28,16 @@ public class CheckPhoneNumberService extends VideoMarketingWebService {
     private Param[] param;
     CheckPhonNuServiceInteraction myListener;
     public CheckPhoneNumberService(CheckPhonNuServiceInteraction listener, String phoneNumber) {
+        super(listener);
         this.myListener = listener;
-        String str = phoneNumber.replace("+",Integer.toString(0));
+        String str = phoneNumber.contains("+")?phoneNumber.replace("+",Integer.toString(0)):phoneNumber;
         this.param = new Param[]{new Param(UrlParam.PHONE_NUMBER,str)};
     }
     public CheckPhoneNumberService(CheckPhonNuServiceInteraction listener, String phoneNumber, String progressDiablogMessage){
+        super(listener);
         this.myListener = listener;
         this.param = new Param[]{new Param(UrlParam.PHONE_NUMBER,phoneNumber)};
-        setProgressDialog(getContextFromListener(listener),progressDiablogMessage);
+        setProgressDialog(progressDiablogMessage);
     }
     @Override
     public String getVideoMarketingServicePath() {
@@ -62,13 +64,6 @@ public class CheckPhoneNumberService extends VideoMarketingWebService {
             onJSONConversionError(jsonE);
         }
     }
-
-
-    @Override
-    protected Context getContext() {
-        return getContextFromListener(myListener);
-    }
-
     @Override
     public Param[] serviceParam() {
         return param;

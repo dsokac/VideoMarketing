@@ -1,32 +1,35 @@
 package hr.videomarketing.CustomViews;
 
 import android.content.Context;
-import android.content.res.TypedArray;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import hr.videomarketing.DMVideoView.DMWebVideoView;
 import hr.videomarketing.Models.BaseModel.Video;
+import hr.videomarketing.MyWebService.Interfaces.OnVideoThumbnailDownloaded;
 import hr.videomarketing.R;
-import hr.videomarketing.Utils.VideoClickListener;
 import hr.videomarketing.VideoMarketingApp;
 
 /**
  * Created by bagy on 24.11.2016..
  */
 
-public class MyVideoView extends RelativeLayout implements View.OnTouchListener,View.OnClickListener{
-    public DMWebVideoView videoView;
+public class MyVideoView extends RelativeLayout implements OnVideoThumbnailDownloaded {
+    public ImageButton videoView;
     public TextView tvLabel;
-    VideoClickListener myList;
+    Video video;
 
     public MyVideoView(Context context) {
         super(context);
+        if(!isInEditMode())init();
+    }
+    public MyVideoView(Context context, Video video){
+        super(context);
+        setVideo(video);
         if(!isInEditMode())init();
     }
 
@@ -40,54 +43,57 @@ public class MyVideoView extends RelativeLayout implements View.OnTouchListener,
         if(!isInEditMode())init();
     }
 
+    public Video getVideo() {
+        return video;
+    }
+
+    public void setVideo(Video video) {
+        this.video = video;
+        if(this.tvLabel != null){
+            this.tvLabel.setText(video.getTitle());
+        }
+        if(!video.isNullObject()){
+            if(video.getThumbnail()==null)video.setMyViewListener(this);
+            else{
+                if(videoView != null)this.videoView.setBackground(new BitmapDrawable(getResources(),this.video.getThumbnail()));
+            }
+        }
+    }
+
+    @Override
+    public void setOnClickListener(OnClickListener l) {
+        if(videoView != null)videoView.setOnClickListener(l);
+        if(tvLabel != null)tvLabel.setOnClickListener(l);
+        super.setOnClickListener(l);
+    }
+
     protected void init(){
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.layout_video_list_item_view,this);
         //videoView = (DMWebVideoView)findViewById(R.id.customVideoView);
         //tvLabel = (TextView)findViewById(R.id.twVideoLabel);
     }
-    public DMWebVideoView getVideoView() {
+    public ImageView getVideoView() {
         return videoView;
     }
 
     public TextView getTvLabel() {
         return tvLabel;
     }
-
-    public void setViewListener(VideoClickListener listener){
-        this.myList = listener;
-        if(videoView !=null){
-            videoView.setOnClickListener(this);
-            //videoView.setOnTouchListener(this);
-            tvLabel.setOnTouchListener(this);
-        }
-        else{
-            log("dm video view is null");
-        }
+    public void setVideoView(ImageButton videoView) {
+        this.videoView = videoView;
     }
 
-    @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        switch (motionEvent.getAction()){
-            case MotionEvent.ACTION_DOWN:
-                if(view instanceof DMWebVideoView){
-                    myList.onVideoSelected(videoView.getVideo());
-                }
-                else if(view instanceof TextView){
-                    myList.onVideoSelected(videoView.getVideo());
-                }
-                break;
-        }
-        return false;
+    public void setTvLabel(TextView tvLabel) {
+        this.tvLabel = tvLabel;
     }
+
     private void log(String text){
         VideoMarketingApp.log("MyVideoView>"+text);
     }
 
     @Override
-    public void onClick(View view) {
-        if(view instanceof DMWebVideoView){
-            myList.onVideoSelected(videoView.getVideo());
-        }
+    public void onImageDownloadedSuccessful() {
+        if(videoView != null)this.videoView.setBackground(new BitmapDrawable(getResources(),this.video.getThumbnail()));
     }
 }

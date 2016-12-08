@@ -34,7 +34,7 @@
         android:layout_weight="0.99"
         android:id="@+id/fragmentContainer"
         android:layout_below="@+id/toolBar"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
         android:layout_above="@+id/bottomBar">
 
     </FrameLayout>

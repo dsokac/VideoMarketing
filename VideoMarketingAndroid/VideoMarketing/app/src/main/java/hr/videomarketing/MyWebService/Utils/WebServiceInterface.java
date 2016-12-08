@@ -1,4 +1,6 @@
 package hr.videomarketing.MyWebService.Utils;
+import android.content.Context;
+
 import org.json.JSONObject;
 
 /**
@@ -7,4 +9,5 @@ import org.json.JSONObject;
 public interface WebServiceInterface {
     JSONObject GET();
     String POST();
+    Context getContext();
 }

@@ -21,11 +21,6 @@ public class LikeVideoService extends VideoInteractionService {
         super(myListener);
         setLike(userId,videoId,likeStatus);
     }
-    public LikeVideoService(OnVideoInteractionService myListener, String userId, String videoId, String likeStatus,String progressDialogMessage) {
-        super(myListener);
-        setLike(userId,videoId,likeStatus);
-        setProgressDialog(getContext(),progressDialogMessage);
-    }
 
     @Override
     public VideoActions getAction() {

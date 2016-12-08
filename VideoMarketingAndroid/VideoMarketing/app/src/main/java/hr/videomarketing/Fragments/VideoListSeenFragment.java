@@ -1,25 +1,22 @@
 package hr.videomarketing.Fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import hr.videomarketing.Models.BaseModel.User;
 import hr.videomarketing.Models.BaseModel.Video;
 import hr.videomarketing.Models.VideoAdapter;
-import hr.videomarketing.MyWebService.Interfaces.VideoListInteractionService;
-import hr.videomarketing.MyWebService.Services.VideoListService;
 import hr.videomarketing.R;
 import hr.videomarketing.Utils.VideoClickListener;
+import hr.videomarketing.Utils.VideoTransfer;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,13 +26,13 @@ import hr.videomarketing.Utils.VideoClickListener;
  * Use the {@link VideoListSeenFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VideoListSeenFragment extends Fragment implements VideoListInteractionService,VideoClickListener {
+public class VideoListSeenFragment extends Fragment implements VideoClickListener {
     private static final String ARG_USER = "hr.videomarketing.videos";
 
     // TODO: Rename and change types of parameters
     private User user = null;
     private GridView grid = null;
-    private List<Video> seenVideos = null;
+    private Video[] seenVideos = null;
     private OnFragmentInteractionListener mListener;
 
     public VideoListSeenFragment() {
@@ -71,14 +68,18 @@ public class VideoListSeenFragment extends Fragment implements VideoListInteract
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
-            if(this.user != null)
-            {
-                new VideoListService(this.user.getId(),this,getResources().getString(R.string.message_get_videos)).execute();
-            }
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        grid = (GridView)view.findViewById(R.id.gridViewSeen);
+        seenVideos = mListener.getVideos("seen");
+        setGridView();
     }
 
     @Override
@@ -87,30 +88,19 @@ public class VideoListSeenFragment extends Fragment implements VideoListInteract
         mListener = null;
     }
 
-    @Override
-    public void onVideosReady(List<Video> videoList) {
-        if(videoList !=null && videoList.size()>0){
-            this.seenVideos = new ArrayList<>();
-            for (Video vid:videoList) {
-                if(vid.getSeen() == 1){
-                    seenVideos.add(vid);
-                }
-            }
-            setGridView();
+
+    private void setGridView() {
+
+        if(seenVideos != null && seenVideos.length > 0){
+            VideoAdapter videoAdapter = new VideoAdapter(getActivity(),seenVideos);
+            videoAdapter.setVideoSelectedListener(this);
+            grid.setAdapter(videoAdapter);
         }
         else{
             TextView txt = new TextView(getActivity());
             txt.setText("Nemate pogledanih videa");
-            grid.addView(txt);
-        }
-    }
-
-    private void setGridView() {
-        if(seenVideos != null){
-            Video[] vid = seenVideos.toArray(new Video[seenVideos.size()]);
-            VideoAdapter videoAdapter = new VideoAdapter(getActivity(),vid);
-            videoAdapter.setVideoSelectedListener(this);
-            grid.setAdapter(videoAdapter);
+            FrameLayout fr = (FrameLayout) getView().findViewById(R.id.seenCont);
+            fr.addView(txt);
         }
     }
 
@@ -119,7 +109,7 @@ public class VideoListSeenFragment extends Fragment implements VideoListInteract
         mListener.onSeenVideoClick(selectedVideo);
     }
 
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener extends VideoTransfer {
         void onSeenVideoClick(Video video);
     }
 }

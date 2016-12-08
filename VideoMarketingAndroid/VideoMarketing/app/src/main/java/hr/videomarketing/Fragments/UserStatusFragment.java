@@ -1,30 +1,27 @@
 package hr.videomarketing.Fragments;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import android.widget.Toast;
 
 import hr.videomarketing.CustomViews.MyEditText;
 import hr.videomarketing.Models.BaseModel.User;
 import hr.videomarketing.Models.BaseModel.UserStatus;
 import hr.videomarketing.MyWebService.Interfaces.OnUserStatusInteractionService;
 import hr.videomarketing.MyWebService.Services.UserStatusService;
-import hr.videomarketing.MyWebService.Utils.WebServiceException;
 import hr.videomarketing.R;
 import hr.videomarketing.VideoMarketingApp;
 
@@ -39,13 +36,15 @@ import static hr.videomarketing.VideoMarketingApp.hideSoftKeyboard;
  * Use the {@link UserStatusFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserStatusFragment extends Fragment implements View.OnTouchListener,OnUserStatusInteractionService {
+public class UserStatusFragment extends Fragment implements View.OnTouchListener,OnUserStatusInteractionService, AdapterView.OnItemSelectedListener, View.OnClickListener {
     private static final String ARG_USER = "hr.videomarketing.userparametar";
     private User user;
     private EditText etUserName = null;
     private Spinner spinMonths = null;
     private EditText etPointsStatus = null;
     private EditText etSpentPoints = null;
+    private ImageButton webShop;
+    private ImageButton personalData;
     private OnFragmentInteractionListener mListener;
 
     private ImageView applogo;
@@ -93,30 +92,35 @@ public class UserStatusFragment extends Fragment implements View.OnTouchListener
         spinMonths = (Spinner) view.findViewById(R.id.spinMonth);
         ArrayAdapter months = ArrayAdapter.createFromResource(getContext(),R.array.months,R.layout.support_simple_spinner_dropdown_item);
         spinMonths.setAdapter(months);
+        spinMonths.setSelection(0);
+
+        spinMonths.setOnItemSelectedListener(this);
+
+
+
+        webShop = (ImageButton)view.findViewById(R.id.imgbtnWebShop);
+        webShop.setBackgroundResource(PROVIDER.backgroundPhotoLeft());
+        webShop.setOnClickListener(this);
+        personalData = (ImageButton)view.findViewById(R.id.imgBtnPersonal);
+        personalData.setBackgroundResource(PROVIDER.backgroundPhotoRight());
+        personalData.setOnClickListener(this);
+        webShop.setColorFilter(getResources().getColor(PROVIDER.getColors().getLinesColor()));
+        personalData.setColorFilter(getResources().getColor(PROVIDER.getColors().getLinesColor()));
 
         applogo = (ImageView)view.findViewById(R.id.iwAppLogo);
         providerLogo = (ImageView)view.findViewById(R.id.iwProviderLogo);
 
         applogo.setImageResource(PROVIDER.getLogos().getAppLogoResId());
         providerLogo.setImageResource(PROVIDER.getLogos().getProviderLogoResId());
-
-
-        DateFormat dateFormat = new SimpleDateFormat("MM");
-        Date date = new Date();
-        log("currentDate>"+dateFormat.format(date));
-
-        int pos = Integer.valueOf(dateFormat.format(date));
-
-        spinMonths.setSelection(pos);
-        spinMonths.setFocusable(false);
-
         view.setOnTouchListener(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        new UserStatusService(this,user,PROVIDER.getCode(),"Dohvaćam podatke");
+        UserStatusService service = new UserStatusService(this,user);
+        service.setProgressDialog("Dohvaćam podatke o korisniku");
+        service.execute();
     }
 
     @Override
@@ -143,9 +147,56 @@ public class UserStatusFragment extends Fragment implements View.OnTouchListener
     }
 
     @Override
-    public void onUserStatusService(UserStatus status){
-        if(etPointsStatus != null){
-            etPointsStatus.setText(Integer.toString(status.getPoints()));
+    public void onUserStatusService(User user) {
+        this.user = user;
+        if(!user.isNullObject() && user.getPointStatus() != null){
+            if(spinMonths.getSelectedItemPosition() > 0){
+                String month = Integer.toString(spinMonths.getSelectedItemPosition()-1);
+                for (int i = 0; i < user.getPointStatus().size(); i++) {
+                    if(month.equals(user.getPointStatus().get(i).getMonth())){
+                        etPointsStatus.setText(user.getPointStatus().get(i).getEarned());
+                        etSpentPoints.setText(user.getPointStatus().get(i).getSpent());
+                    }
+                }
+            }
+        }
+        else {
+            Toast.makeText(getActivity(),"Servis nije u funkciji",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if(user.getPointStatus() != null && i > 0){
+            String item =Integer.toString(i-1);
+            boolean founde = false;
+            log("MonthSelected>"+item);
+            for (int j = 0; j < user.getPointStatus().size(); j++) {
+                if(item.equals(user.getPointStatus().get(j).getMonth())){
+                    etPointsStatus.setText(user.getPointStatus().get(j).getEarned());
+                    etSpentPoints.setText(user.getPointStatus().get(j).getSpent());
+                    founde = true;
+                }
+            }
+            if(!founde){
+                etPointsStatus.setText(Integer.toString(0));
+                etSpentPoints.setText(Integer.toString(0));
+            }
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == webShop.getId()){
+            mListener.onWebShopClick();
+        }
+        else if(view.getId() == personalData.getId()){
+            mListener.onUserSettingsClick();
         }
     }
 

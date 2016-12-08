@@ -1,6 +1,7 @@
 package hr.videomarketing.Fragments;
 
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,20 +9,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import hr.videomarketing.DMVideoView.DMWebVideoView;
 import hr.videomarketing.Models.BaseModel.User;
 import hr.videomarketing.Models.BaseModel.Video;
 import hr.videomarketing.Models.VideoAdapter;
+import hr.videomarketing.MyWebService.Interfaces.OnVideoThumbnailDownloaded;
 import hr.videomarketing.MyWebService.Interfaces.VideoListInteractionService;
 import hr.videomarketing.MyWebService.Services.VideoListService;
 import hr.videomarketing.R;
 import hr.videomarketing.Utils.VideoClickListener;
+import hr.videomarketing.Utils.VideoTransfer;
 import hr.videomarketing.VideoMarketingApp;
 
 import static hr.videomarketing.VideoMarketingApp.PROVIDER;
@@ -34,15 +36,16 @@ import static hr.videomarketing.VideoMarketingApp.PROVIDER;
  * Use the {@link VideoListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VideoListFragment extends Fragment implements VideoListInteractionService, VideoClickListener{
+public class VideoListFragment extends Fragment implements VideoClickListener,VideoListInteractionService, View.OnClickListener, OnVideoThumbnailDownloaded {
 
     private static final String ARG_USER = "hr.videomarketing.user_extras";
     private User user;
     private TextView twTop;
     private OnFragmentInteractionListener mListener;
-    private DMWebVideoView mVideoViewTop = null;
+    private ImageButton imBtnVVTop;
     private GridView gridView = null;
-    private Video[] videos;
+    private Video[] videos=null;
+    private int topVideo;
 
     public VideoListFragment() {
         // Required empty public constructor
@@ -67,28 +70,52 @@ public class VideoListFragment extends Fragment implements VideoListInteractionS
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getArguments() != null){
+            user = User.newInstance(getArguments().getString(ARG_USER));
+        }
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if(videos == null || videos.length ==0){
-            user = User.newInstance(getArguments().getString(ARG_USER));
-            if(user !=null){
-                new VideoListService(user.getId(),this,getResources().getString(R.string.message_get_videos)).execute();
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(ARG_USER,user.toString());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        if(user == null){
+            if(savedInstanceState != null && !savedInstanceState.isEmpty()){
+                user = User.newInstance(savedInstanceState.getString(ARG_USER));
             }
         }
-        else{
-            onVideosReady(new ArrayList<>(Arrays.asList(videos)));
-        }
+        super.onViewStateRestored(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_video_list_layout, container, false);
 
+    }
+
+    @Override
+    public void onStart() {
+        if(videos == null || videos.length ==0){
+            Video[] vid = mListener.getVideos("");
+            if(vid == null){
+                getVideos();
+            }
+        }
+        else{
+            setVideos();
+        }
+        super.onStart();
+    }
+
+    private void getVideos() {
+        VideoListService videoListService = new VideoListService(user.getId(),this);
+        videoListService.setProgressDialog(getResources().getString(R.string.message_get_videos));
+        videoListService.execute();
     }
 
     @Override
@@ -97,9 +124,11 @@ public class VideoListFragment extends Fragment implements VideoListInteractionS
 
         gridView = (GridView) view.findViewById(R.id.gvVideoList);
         twTop = (TextView) view.findViewById(R.id.twLabelTop);
-        mVideoViewTop = (DMWebVideoView) view.findViewById(R.id.topVideo);
+        imBtnVVTop = (ImageButton) view.findViewById(R.id.imBtnVVTop);
+        imBtnVVTop.setOnClickListener(this);
         twTop.setTextColor(getResources().getColor(PROVIDER.getColors().getLinesColor()));
 
+        setVideos();
     }
     @Override
     public void onAttach(Context context) {
@@ -121,26 +150,45 @@ public class VideoListFragment extends Fragment implements VideoListInteractionS
         mListener = null;
     }
 
-    @Override
-    public void onVideosReady(List<Video> videoList) {
-        if(videoList != null && videoList.size() > 0){
-            Video top = findTopVideo(videoList);
-            if(top != null)mVideoViewTop.setVideo(top);
-            else {
-                mVideoViewTop.setVideo(videoList.get(videoList.size()-1));
-                }
-            mVideoViewTop.load();
+    public void setVideos(){
+        if(videos != null && videos.length > 0){
+            this.topVideo = findTopVideo();
+            if(videos[topVideo].getThumbnail() == null)videos[topVideo].setMyViewListener(this);
+            else imBtnVVTop.setBackground(new BitmapDrawable(getResources(),videos[topVideo].getThumbnail()));
             if( gridView != null){
-                videos = videoList.toArray(new Video[videoList.size()]);
                 VideoAdapter videoAdapter = new VideoAdapter(getActivity(),videos);
                 videoAdapter.setVideoSelectedListener(this);
                 gridView.setAdapter(videoAdapter);
             }
+            imBtnVVTop.setOnClickListener(this);
         }
     }
     @Override
     public void onVideoSelected(Video selectedVideo) {
         mListener.onVideoClick(selectedVideo);
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.imBtnVVTop:
+                mListener.onVideoClick(videos[topVideo]);
+                break;
+        }
+    }
+
+    @Override
+    public void onVideosReady(Video[] videoList) {
+        mListener.saveVideoList(videoList);
+        //List<Video> unseen = findUnseenVideos();
+        videos = videoList;
+        setVideos();
+    }
+
+    @Override
+    public void onImageDownloadedSuccessful() {
+        imBtnVVTop.setBackground(new BitmapDrawable(getResources(),videos[topVideo].getThumbnail()));
     }
 
     /**
@@ -153,22 +201,35 @@ public class VideoListFragment extends Fragment implements VideoListInteractionS
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener{
+    public interface OnFragmentInteractionListener extends VideoTransfer {
        void onVideoClick(Video video);
     }
     private void log(String text){
         VideoMarketingApp.log("Fragment>VideoList> "+text);
     }
 
-    private Video findTopVideo(List<Video> videoList){
-        for (int i = 0; i < videoList.size(); i++) {
-            Video vid = videoList.get(i);
+    private int findTopVideo(){
+        for (int i = 0; i < videos.length; i++) {
+            Video vid = videos[i];
             if(vid.getSponsored() == 1){
-                //videoList.remove(i);
-                return vid;
+                log("SponsoredVideo>"+vid.getTitle());
+                return i;
             }
         }
 
+        return 0;
+    }
+    private Video[] findUnseenVideos(){
+        if(videos != null){
+            List<Video> list = new ArrayList<>();
+            for (int i = 0; i < videos.length; i++) {
+                if(videos[i].getSeen() == 1){
+                    list.add(videos[i]);
+                }
+            }
+            return list.toArray(new Video[list.size()]);
+        }
         return null;
     }
+
 }

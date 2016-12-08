@@ -11,12 +11,12 @@ import hr.videomarketing.Utils.VipPackage.Vip;
 public class ProviderProducer {
     public static ProviderFactory getProvider(String operator){
         switch (operator){
-            case Vip.id:
-                return new Vip();
+            case TMobile.id:
+                return new TMobile();
             /*case TMobile.id:
                 return new TMobile();*/
             default:
-                return new TMobile();
+                return new Vip();
         }
     }
 }
