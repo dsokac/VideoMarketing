@@ -9,7 +9,7 @@ $tu = new TelecommUser();
 $tu->setUser($u->getId());
 $to = $tu->getActiveTelecommOperator();
 $tu = new TelecommUser($u->getId(),$to->getId());
-$data = $tu->getPointsStatsPerMonth();
+$data = $tu->getPointsStats();
 
 $json = array(
     "status" => 100,
