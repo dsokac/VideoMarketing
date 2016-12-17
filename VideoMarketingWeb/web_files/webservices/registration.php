@@ -6,7 +6,7 @@ include_once "../../web_files/classes/User.class.php";
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+$id = null;
 $name = $_GET["name"];
 $surname = $_GET["surname"];
 $birthday = $_GET["birthday"];
@@ -46,7 +46,11 @@ if($u->emailExists($email)){
     $output = $newUser->create();
     $success = $output == 0 ? 0 : 1;
     $message = $output == 0 ? "User could not be created. Try again." : "User is created successfully";
-    
+    if($success == 1){
+      $query = Db::makeQuery("select", array("users"), array("id"),"id is not null order by created_at desc limit 1");
+      $result = Db::query($query);
+      $id = intval($result[0]["id"]);
+    }
 }
 
 $json = array(
@@ -54,7 +58,8 @@ $json = array(
     "requested_at" => date(MyGlobal::$timeFormat),
     "data" => array(
         "success" => $success,
-        "message" => $message
+        "message" => $message,
+        "id" => $id,
     )
 );
 
