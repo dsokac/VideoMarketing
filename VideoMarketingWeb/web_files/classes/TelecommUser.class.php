@@ -307,7 +307,7 @@ class TelecommUser extends AbstractModel {
        $this->setTelecommOperator(intval($id));
      }
     
-     //TODO documentation
+     //TODO documentation  *UNUSED*
     public function getPointsStatsPerMonth(){
         $vv = new VideoView();
         $vv->setUser($this->user->getId());
@@ -328,7 +328,7 @@ class TelecommUser extends AbstractModel {
         return $output;
     }
     
-    //TODO documentation
+    //TODO documentation *UNUSED*
     private function getEarliestMonthYear(){
        $query = Db::makeQuery("select", array("video_views"), array("created_at"), "user = {$this->user->getId()} order by created_at asc limit 1");
        $result = Db::query($query)[0];
@@ -336,14 +336,14 @@ class TelecommUser extends AbstractModel {
        return array("month" => intval($earlyDate->format("n"))-1, "year" => intval($earlyDate->format("Y")));
     }
     
-    //TODO documentation
+    //TODO documentation *UNUSED*
     private function getCurrentMonthYear(){
        $month = intval(date("n"))-1;
        $year = intval(date("Y"));
        return array("month" => $month, "year" => $year);
     }
     
-    //TODO documentation
+    //TODO documentation *UNUSED*
     private function getPointsForMonth($month, $year){
       $earnedPoints = $this->getEarnedPointsForMonth($month, $year);
       $spentPoints = $this->getSpentPointsForMonth($month, $year);
@@ -351,7 +351,7 @@ class TelecommUser extends AbstractModel {
       return ["month" => $month, "year" => $year, "earned" => $restPoints, "spent" => $spentPoints];
     }
     
-    //TODO documentation
+    //TODO documentation *UNUSED*
     private function getEarnedPointsForMonth($month, $year){
       $startDateString = "01.".($month+1).".{$year} 00:00:00";
       if($month == 11){
@@ -380,7 +380,7 @@ class TelecommUser extends AbstractModel {
       
     }
     
-    //TODO documentation
+    //TODO documentation *UNUSED*
     private function getSpentPointsForMonth($month, $year){
       $startDateString = "01.".($month+1).".{$year} 00:00:00";
       if($month == 11){
@@ -406,4 +406,16 @@ class TelecommUser extends AbstractModel {
       }
       return $sum;
     }
+    
+     //TODO documentation
+    public function getPointsStats(){
+        $vv = new VideoView();
+        $vv->setUser($this->user->getId());
+        if(!$vv->hasUserViews()){
+          return array("earned" => 0, "spent" => 0);
+        }
+     
+        return array("earned" => $this->getPoints(), "spent" => $this->getSpentPoints());
+    }
+    
 }
