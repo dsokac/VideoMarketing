@@ -195,7 +195,7 @@ public class VideoListFragment extends Fragment implements VideoClickListener,Vi
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.imBtnVVTop:
-                mListener.onVideoClick(videos[topVideo]);
+                if(videos != null && videos.length >0)mListener.onVideoClick(videos[topVideo]);
                 break;
         }
     }

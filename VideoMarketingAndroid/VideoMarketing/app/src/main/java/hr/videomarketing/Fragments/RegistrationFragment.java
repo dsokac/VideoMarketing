@@ -13,9 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,8 +27,8 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +45,7 @@ import hr.videomarketing.MyWebService.Services.CheckPhoneNumberService;
 import hr.videomarketing.MyWebService.Services.GeographicUnitsService;
 import hr.videomarketing.MyWebService.Services.RegistrationService;
 import hr.videomarketing.R;
-import hr.videomarketing.Utils.MyFiles;
+import hr.videomarketing.Utils.Files;
 import hr.videomarketing.Utils.UserDataCheck;
 import hr.videomarketing.VideoMarketingApp;
 
@@ -65,7 +63,7 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
         GeoServiceInteraction,View.OnFocusChangeListener, CheckPhonNuServiceInteraction {
     private final static String ARG_PHONENUMBER ="hr.videomarketing.phonenumber" ;
     private OnRegistrationFragmentInteraction mListener;
-    private String phoneNumber;
+    private String phoneNumber="";
     private EditText etBirthday = null;
     private EditText etName = null;
     private EditText etUserName = null;
@@ -80,8 +78,9 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
     private EditText etPhoneNumber = null;
     private MyEditText etPasswordCheck = null;
     private Button btnShowPassword = null;
+    MyEditText etPhonePrefix;
     private boolean passwordShown = false;
-    private Map<EditText,Boolean> inputs;
+    private List<Integer> inputs;
     private Drawable errorIcon;
     private User registeredUser;
     public RegistrationFragment() {
@@ -106,7 +105,6 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
         errorIcon = getResources().getDrawable(R.drawable.ic_error);
         errorIcon.setBounds(0,0,errorIcon.getIntrinsicWidth(),errorIcon.getIntrinsicHeight());
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -118,27 +116,27 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
         super.onViewCreated(view, savedInstanceState);
         iwLogoApp = (ImageView)view.findViewById(R.id.iwAppLogo);
         iwLogoOperator = (ImageView)view.findViewById(R.id.iwNetworkOperLogo);
-        inputs = new HashMap<>();
+        inputs = new ArrayList<>();
 
         etName = (MyEditText)view.findViewById(R.id.etName);
-        inputs.put(etName,false);
+        inputs.add(etName.getId());
         etName.setOnFocusChangeListener(this);
 
         etEmail = (MyEditText)view.findViewById(R.id.etEmail);
-        inputs.put(etEmail,false);
+        inputs.add(etEmail.getId());
         etEmail.setOnFocusChangeListener(this);
 
         etUserName = (MyEditText)view.findViewById(R.id.etUserName);
         etUserName.setOnFocusChangeListener(this);
-        inputs.put(etUserName,false);
+        inputs.add(etUserName.getId());
 
         etPasswrod = (MyEditText)view.findViewById(R.id.etPassword);
         etPasswrod.setOnFocusChangeListener(this);
-        inputs.put(etPasswrod,false);
+        inputs.add(etPasswrod.getId());
 
         etPasswordCheck = (MyEditText)view.findViewById(R.id.etPasswordCheck);
         etPasswordCheck.setOnFocusChangeListener(this);
-        inputs.put(etPasswordCheck,false);
+        inputs.add(etPasswordCheck.getId());
 
 
         btnShowPassword = (Button)view.findViewById(R.id.imBtnShowPassword);
@@ -153,12 +151,11 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
                 calendar.set(Calendar.MONTH,month);
                 calendar.set(Calendar.DAY_OF_MONTH,day);
                 etBirthday.setText(dateFormat.format(calendar.getTime()));
-                replace(etBirthday,true);
             }
         };
 
         etBirthday = (MyEditText)view.findViewById(R.id.etBirthday);
-        inputs.put(etBirthday,false);
+        inputs.add(etBirthday.getId());
         etBirthday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -183,16 +180,16 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
         iwLogoApp.setImageResource(PROVIDER.getLogos().getAppLogoResId());
         ArrayAdapter adapter = ArrayAdapter.createFromResource(getContext(),R.array.genders,R.layout.support_simple_spinner_dropdown_item);
         spinGender.setAdapter(adapter);
-
+        etPhonePrefix = (MyEditText)view.findViewById(R.id.etPhonePrefix);
         etPhoneNumber = (EditText)view.findViewById(R.id.etPhoneNumber);
         etPhoneNumber.setOnFocusChangeListener(this);
-        inputs.put(etPhoneNumber,false);
+        inputs.add(etPhoneNumber.getId());
 
-        if(this.phoneNumber != null & !this.phoneNumber.equals("")){
+        if(this.phoneNumber != null && !this.phoneNumber.equals("")){
             checkPhoneNumberInDb(this.phoneNumber);
             etPhoneNumber.setText(this.phoneNumber);
+            etPhonePrefix.setVisibility(View.GONE);
             etPhoneNumber.setFocusable(false);
-            replace(etPhoneNumber,true);
         }
 
 
@@ -202,9 +199,7 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
         lblLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Object object = MyFiles.getInstance().readFromFIle(getActivity(), MyFiles.Files.USER_DATA_FILE);
-                User user = object instanceof User && object != null?(User)object:null;
-                mListener.redirectToLogIn(user !=null?user.toJSON():"");
+                mListener.redirectToLogIn();
             }
         });
         ScrollView layout = (ScrollView) view.findViewById(R.id.registration_scrollview_layout);
@@ -240,10 +235,8 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.ibDoRegistratin){
-            User user = isInputCorrect();
-            if(user != null){
-                registeredUser = user;
-                log("Conversion: user to string: "+registeredUser.toJSON());
+            registeredUser = isInputCorrect();
+            if(!registeredUser.isNullObject()){
                 new RegistrationService(this,registeredUser,getResources().getString(R.string.message_registration)).execute();
             }
             else{
@@ -276,7 +269,7 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
     }
 
     @Override
-    public void onRegistraionService(boolean success, String message) {
+    public void onRegistraionService(boolean success, String message, long id) {
         if(!success){
             //Unsuccessful registration
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -286,54 +279,45 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.cancel();
-                    mListener.redirectToLogIn(registeredUser != null?registeredUser.toJSON():"");
+                    mListener.redirectToLogIn();
                 }
             });
             builder.setNegativeButton(getString(R.string.dialog_btn_text_re_registration), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.cancel();
-                    Intent intent = getActivity().getIntent();
-                    getActivity().finish();
-                    startActivity(intent);
                 }
             });
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         }
         else{
-            registeredUser.setLogedIn(false);
-            if(MyFiles.getInstance().writeInFile(getActivity(),MyFiles.Files.USER_DATA_FILE,registeredUser.toJSON())){
-                log("write user in file successful"+registeredUser.toJSON());
+            //TODO: add user id in user(When service edit is done)
+            registeredUser.setId(id);
+            if(Files.USER_DATA_FILE.write(getActivity(),registeredUser.toJSON())){
+                log("write user: "+registeredUser.getUsername()+" in file successful");
             }
             else{
                 log("write user in file unsuccessful");
             }
-            mListener.redirectToLogIn(registeredUser.toJSON());
+            mListener.redirecToHomeActivity();
         }
     }
 
 
     private User isInputCorrect(){
         if(spinGeoLocation.getSelectedItem() == null){
-            log("There is no geo locations");
-            return null;
+            Toast.makeText(getActivity(),getResources().getString(R.string.message_error_on_getgeolocations),Toast.LENGTH_LONG).show();
+            return new User();
         }
-        if(inputs.containsValue(false)){
-            log("Something isnt true");
-            log("inputs size>"+inputs.size());
-            for (Map.Entry<EditText,Boolean> entry:inputs.entrySet()) {
-                EditText k = entry.getKey();
-                Boolean v = entry.getValue();
-                if(!v){
-                    k.setError(getString(R.string.input_incorrect_all),errorIcon);
-                }
+        //TODO: redo validation
+        for (int viewId:inputs) {
+            if(!checkViewInputs(viewId)) {
+                return new User();
             }
-            return null;
         }
         //Reading user data
         User newUser = new User();
-        if(inputs.get(etName)){
             String[] userNameSurname = etName.getText().toString().split(" ");
             newUser.setName(userNameSurname[0].trim());
             String surname = "";
@@ -342,9 +326,8 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
                 if(userNameSurname.length>2 && i < (userNameSurname.length-1))surname += "-";
             }
             newUser.setSurname(surname.trim());
-        }
 
-        this.phoneNumber = etPhoneNumber.getText().toString().trim();
+        if(this.phoneNumber.equals(""))this.phoneNumber =etPhonePrefix.getText().toString()+etPhoneNumber.getText().toString().trim();
         newUser.setPhoneNumber(this.phoneNumber);
         newUser.setUsername(etUserName.getText().toString().trim());
         newUser.setEmail(etEmail.getText().toString().trim());
@@ -355,83 +338,71 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
         newUser.setBirthday(etBirthday.getText().toString().trim());
         return newUser;
     }
-    //split input string on whitespace, on index 0 is name 1 is surname
 
+    private boolean checkViewInputs(int v){
+        switch (v){
+            case R.id.etName:
+                if(!UserDataCheck.getInstance().checkName(etName.getText().toString())){
+                    etName.setError(getResources().getString(R.string.input_incorrect_name),errorIcon);
+                    return false;
+                }
+                break;
+            case R.id.etBirthday:
+                if(!UserDataCheck.getInstance().checkBirthday(etBirthday.getText().toString())){
+                    etBirthday.setError(getResources().getString(R.string.input_incorrect_birthday),errorIcon);
+                    return false;
+                }
+                break;
+            case R.id.etEmail:
+                if(!UserDataCheck.getInstance().checkEmail(etEmail.getText().toString())){
+                    etEmail.setError(getResources().getString(R.string.input_incorrect_email),errorIcon);
+                    return false;
+                }
+                break;
+            case R.id.etPassword:
+                if(!UserDataCheck.getInstance().checkPassword(etPasswrod.getText().toString())){
+                    etPasswrod.setError(getResources().getString(R.string.input_incorrect_password),errorIcon);
+                    return false;
+                }
+                break;
+            case R.id.etUserName:
+                if(!UserDataCheck.getInstance().checkUserName(etUserName.getText().toString())){
+                    etUserName.setError(getResources().getString(R.string.input_incorrect_username),errorIcon);
+                    return false;
+                }
+                break;
+            case R.id.etPasswordCheck:
+                String password = etPasswrod.getText().toString();
+                String check = etPasswordCheck.getText().toString();
+                if(!check.equals(password)){
+                    etPasswordCheck.setError(getString(R.string.input_incorrect_password_check),errorIcon);
+                    return false;
+                }
+                break;
+            case R.id.etPhoneNumber:
+                if(!this.phoneNumber.equals(""))return true;
+                String number =etPhoneNumber.getText().toString();
+                if(!UserDataCheck.getInstance().checkPhoneNumber(number)){
+                    etPhoneNumber.setError(getResources().getString(R.string.input_incorrect_phone_number),errorIcon);
+                    return false;
+                }else{
+                    String dbCheckNumberFormat = etPhonePrefix.getText().toString()+number;
+                    checkPhoneNumberInDb(dbCheckNumberFormat);
+                }
+                break;
+            default:
+                log("checkViewInput>view not found");
+        }
+        return true;
+    }
 
     @Override
     public void onFocusChange(View view, boolean b) {
-            switch (view.getId()){
-                case R.id.etName:
-                    if(!UserDataCheck.getInstance().checkName(etName.getText().toString())){
-                        etName.setError(getResources().getString(R.string.input_incorrect_name),errorIcon);
-                        replace(etName,false);
-                    }else{
-                        replace(etName,true);
-                    }
-                    break;
-                case R.id.etBirthday:
-                    if(!UserDataCheck.getInstance().checkBirthday(etBirthday.getText().toString())){
-                        etBirthday.setError(getResources().getString(R.string.input_incorrect_birthday),errorIcon);
-                        replace(etBirthday,false);
-                    }
-                    else{
-                        replace(etBirthday,true);
-                    }
-                    break;
-                case R.id.etEmail:
-                    if(!UserDataCheck.getInstance().checkEmail(etEmail.getText().toString())){
-                        etEmail.setError(getResources().getString(R.string.input_incorrect_email),errorIcon);
-                        replace(etEmail,false);
-                    }else{
-                        replace(etEmail,true);
-                    }
-                    break;
-                case R.id.etPassword:
-                    if(!UserDataCheck.getInstance().checkPassword(etPasswrod.getText().toString())){
-                        etPasswrod.setError(getResources().getString(R.string.input_incorrect_password),errorIcon);
-                        replace(etPasswrod,false);
-                    }
-                    else{
-                        replace(etPasswrod,true);
-                    }
-                    break;
-                case R.id.etUserName:
-                    if(!UserDataCheck.getInstance().checkUserName(etUserName.getText().toString())){
-                        etUserName.setError(getResources().getString(R.string.input_incorrect_username),errorIcon);
-                        replace(etUserName,false);
-                    }
-                    else{
-                        replace(etUserName,true);
-                    }
-                    break;
-                case R.id.etPasswordCheck:
-                    String password = etPasswrod.getText().toString();
-                    String check = etPasswordCheck.getText().toString();
-                    if(check.equals(password)){
-                        replace(etPasswordCheck,true);
-                    }else{
-                        etPasswordCheck.setError(getString(R.string.input_incorrect_password_check),errorIcon);
-                        replace(etPasswordCheck,false);
-                    }
-                    break;
-                case R.id.etPhoneNumber:
-                    String number = etPhoneNumber.getText().toString();
-                    if(UserDataCheck.getInstance().checkPhoneNumber(number)){
-                        checkPhoneNumberInDb(number);
-                    }else{
-                        etPhoneNumber.setError(getResources().getString(R.string.input_incorrect_phone_number),errorIcon);
-                        replace(etPhoneNumber,false);
-                    }
-                    break;
-                default:
-                    log("focus changed, view not found");
-            }
+        if(!b)checkViewInputs(view.getId());
     }
     private void checkPhoneNumberInDb(String phonenumber){
-        log("Phone number>"+phonenumber);
         if(phonenumber != null && !phonenumber.equals("")){
             String foo = phonenumber.replace("+",Integer.toString(0));
-            log("foo>"+foo);
             new CheckPhoneNumberService(this,foo,getString(R.string.action_check_number)).execute();
         }
 
@@ -441,12 +412,13 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
     public void onPhoneNumberChecked(boolean exist, final String message) {
         if(exist){
             AlertDialog.Builder build = new AlertDialog.Builder(getActivity(), android.app.AlertDialog.THEME_HOLO_LIGHT);
+            build.setCancelable(false);
             build.setMessage(message);
             build.setTitle(getString(R.string.message_warning_title));
             build.setPositiveButton(getString(R.string.dialog_btn_text_logIn), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    mListener.redirectToLogIn("");
+                    mListener.redirectToLogIn();
                 }
             });
             build.setNegativeButton(getString(R.string.dialog_btn_permission_denied), new DialogInterface.OnClickListener() {
@@ -458,13 +430,11 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
             AlertDialog alert = build.create();
             alert.show();
         }
-        else{
-            replace(etPhoneNumber,true);
-        }
     }
 
     public interface OnRegistrationFragmentInteraction {
-        void redirectToLogIn(String data);
+        void redirectToLogIn();
+        void redirecToHomeActivity();
     }
     private void log(String text){
         VideoMarketingApp.log("Fragment>Registration>"+text);
@@ -473,12 +443,5 @@ public class RegistrationFragment extends Fragment implements Button.OnClickList
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-    private void replace(EditText et, boolean v){
-        if(inputs.containsKey(et) && inputs.get(et) != v){
-            log("Replacing>"+et.getId());
-            inputs.remove(et);
-            inputs.put(et,v);
-        }
     }
 }

@@ -20,12 +20,10 @@ import static hr.videomarketing.MyWebService.Services.UserStatusService.URLParam
 public class UserStatusService extends VideoMarketingWebService {
     Param[] params;
     OnUserStatusInteractionService myListener;
-    User user = null;
 
     public UserStatusService(OnUserStatusInteractionService myListener,User user) {
         super(myListener);
         this.myListener = myListener;
-        this.user = user;
         setParams(user);
     }
     public void setParams(User user){
@@ -36,7 +34,7 @@ public class UserStatusService extends VideoMarketingWebService {
 
     @Override
     public String getVideoMarketingServicePath() {
-        return "points_per_month";
+        return "points_stats";
     }
 
     @Override
@@ -50,9 +48,8 @@ public class UserStatusService extends VideoMarketingWebService {
             onListenerNull(this);
         }
         try{
-            JSONArray data = result.getJSONArray("data");
-            user.setStatus(data);
-            myListener.onUserStatusService(user);
+            JSONObject data = result.getJSONObject("data");
+            myListener.onUserStatusService(data.getInt("earned"),data.getInt("spent"));
         }catch (JSONException js){
            onJSONConversionError(js);
             Toast.makeText(getContext(),"Nema podataka za trazenog korisnika",Toast.LENGTH_SHORT).show();

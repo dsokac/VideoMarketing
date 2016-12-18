@@ -22,7 +22,7 @@ import static hr.videomarketing.MyWebService.Utils.WebServiceException.WRONG_SER
  * Created by bagy on 23.11.2016..
  */
 
-public abstract class VideoMarketingWebService extends WebService implements ConversionFailed{
+public abstract class VideoMarketingWebService extends WebService<Void,Void,Void> implements ConversionFailed{
     private final String SERVER_PATH="http://www.videomarketdemo.esy.es/webservice/";
     Context context = null;
 

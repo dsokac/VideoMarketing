@@ -8,9 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
@@ -19,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +32,10 @@ import hr.videomarketing.Fragments.VideoListSeenFragment;
 import hr.videomarketing.Models.BaseModel.User;
 import hr.videomarketing.Models.BaseModel.Video;
 import hr.videomarketing.MyWebService.Interfaces.OnUpdateUserProviderService;
-import hr.videomarketing.MyWebService.Interfaces.OnVideoInteractionService;
 import hr.videomarketing.MyWebService.Interfaces.VideoListInteractionService;
 import hr.videomarketing.MyWebService.Services.AddUserAndProvider;
-import hr.videomarketing.MyWebService.Services.CommentVideoService;
-import hr.videomarketing.MyWebService.Services.LikeVideoService;
 import hr.videomarketing.MyWebService.Services.VideoListService;
-import hr.videomarketing.MyWebService.Services.VideoSeenService;
-import hr.videomarketing.MyWebService.VideoActions;
-import hr.videomarketing.Utils.MyFiles;
+import hr.videomarketing.Utils.Files;
 import hr.videomarketing.Utils.VideoMarketingAppDialog;
 
 import static hr.videomarketing.VideoMarketingApp.ACTIVE_FRAGMENT;
@@ -56,7 +48,7 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
                                                                 UserStatusFragment.OnFragmentInteractionListener,
                                                                 VideoListLikedFragment.OnFragmentInteractionListener,
                                                                 VideoListSeenFragment.OnFragmentInteractionListener,
-                                                                PlayVideoFragment.OnFragmentInteractionListener, OnVideoInteractionService, OnUpdateUserProviderService, VideoListInteractionService{
+                                                                PlayVideoFragment.OnFragmentInteractionListener, OnUpdateUserProviderService, VideoListInteractionService{
 
 
 
@@ -88,23 +80,18 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
         VideoMarketingApp.setStatusBarColor(this);
         VideoMarketingApp.setNavigationBarColor(this);
 
-        Object object = MyFiles.getInstance().readFromFIle(this, MyFiles.Files.USER_DATA_FILE);
+        Object object = Files.USER_DATA_FILE.read(this);
         if(object == null){
-            goToLogIn(false);
+            goToLogIn();
         }
         else{
             activeUser = (User) object;
-            if(!activeUser.isLogedIn()){
-                goToLogIn(true);
+            Object obj = Files.USER_PROVIDER.read(this);
+            if(obj == null){
+                new AddUserAndProvider(this,Long.toString(activeUser.getId()),PROVIDER.getCode()).execute();
+                Files.USER_PROVIDER.write(this,"username="+activeUser.getUsername()+"&"+"provider="+PROVIDER.getCode());
             }
-            else {
-                changeFragment(VideoListFragment.newInstance(activeUser.toJSON()));
-                Object obj = MyFiles.getInstance().readFromFIle(this, MyFiles.Files.USER_PROVIDER);
-                if(obj == null){
-                    new AddUserAndProvider(this,Long.toString(activeUser.getId()),PROVIDER.getCode()).execute();
-                    MyFiles.getInstance().writeInFile(this, MyFiles.Files.USER_PROVIDER,"username="+activeUser.getUsername()+"&"+"provider="+PROVIDER.getCode());
-                }
-            }
+            changeFragment(VideoListFragment.newInstance(activeUser.toJSON()));
         }
 
         toolbar = (Toolbar) findViewById(R.id.toolBar);
@@ -207,12 +194,8 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
             }
         }
     }
-    private void goToLogIn(boolean exists){
+    private void goToLogIn(){
         Intent intent = new Intent(this,RegistrationActivity.class);
-        intent.putExtra(getResources().getString(R.string.intent_logedIn),exists);
-        if(!activeUser.isNullObject()){
-            intent.putExtra(getString(R.string.intent_extra_user),activeUser.toJSON());
-        }
         startActivity(intent);
         finish();
     }
@@ -297,50 +280,18 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
         startVideo(video);
     }
     private void startVideo(Video vid){
-        log("HomeActivity>SelectedVideo>"+vid.toJSON());
-        PlayVideoFragment frag = PlayVideoFragment.newInstance(vid.toJSON());
+        lastVideo = vid;
+        PlayVideoFragment frag = PlayVideoFragment.newInstance(vid.toJSON(),activeUser.toJSON());
         changeFragment(frag);
     }
 
     @Override
-    public void onVideoEnded(Video video) {
-        new VideoSeenService(this,Long.toString(activeUser.getId()),Integer.toString(video.getId())).execute();
-        findVideoInList(video).setSeen(1);
-    }
-
-    @Override
-    public void onUserComment(String comment,Video video) {
-        new CommentVideoService(this,Integer.toString(video.getId()),Long.toString(activeUser.getId()),comment).execute();
-    }
-
-    @Override
-    public void onVideoInteractionService(VideoActions action, int succes, String message) {
-        if(succes == 1){
-            switch (action){
-                case SEEN:
-                    if(lastVideo != null)lastVideo.setSeen(1);
-                    log("VideoService>Seen>success");
-                    break;
-                case LIKE:
-                    if(lastVideo != null)lastVideo.setUserLike(1);
-                    log("VideoService>Like>success");
-                    break;
-                case COMMENT:
-                    log("VideoService>Comment>success");
-                    break;
-
-            }
-
+    public void updateVideo(Video video) {
+        int index = findVideoInList(video);
+        if(index != -1){
+            videos[index] = video;
         }
     }
-
-
-    @Override
-    public void onUserLike(Video video) {
-        new LikeVideoService(this,Long.toString(activeUser.getId()),Integer.toString(video.getId()),Integer.toString(video.getUserLike())).execute();
-        findVideoInList(video).setUserLike(video.getUserLike());
-    }
-
     @Override
     public Video[] getVideos(String condition) {
         switch (condition){
@@ -384,14 +335,14 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
         }
         return like.toArray(new Video[like.size()]);
     }
-    private Video findVideoInList(Video vid){
+    private int findVideoInList(Video vid){
         log("Searching for: "+vid.getId());
         for (int i = 0; i < videos.length; i++) {
             if(vid.getId()==videos[i].getId()){
-                return videos[i];
+                return i;
             }
         }
-        return null;
+        return -1;
     }
 
     @Override

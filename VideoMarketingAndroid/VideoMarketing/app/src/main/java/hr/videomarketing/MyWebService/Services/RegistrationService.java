@@ -38,11 +38,12 @@ public class RegistrationService extends VideoMarketingWebService {
         try {
             JSONObject jsonObject = result.getJSONObject("data");
             int success = jsonObject.getInt("success");
+            long id =jsonObject.has("id")?jsonObject.getLong("id"):1;
             String message = jsonObject.getString("message");
             if(success == 1){
-                myListener.onRegistraionService(true,message);
+                myListener.onRegistraionService(true,message,id);
             } else {
-                myListener.onRegistraionService(false,message);
+                myListener.onRegistraionService(false,message,id);
             }
         }catch (JSONException json){
             onJSONConversionError(json);

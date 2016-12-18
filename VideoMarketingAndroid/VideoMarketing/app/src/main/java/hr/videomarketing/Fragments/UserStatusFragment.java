@@ -36,7 +36,7 @@ import static hr.videomarketing.VideoMarketingApp.hideSoftKeyboard;
  * Use the {@link UserStatusFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserStatusFragment extends Fragment implements View.OnTouchListener,OnUserStatusInteractionService, AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class UserStatusFragment extends Fragment implements View.OnTouchListener,OnUserStatusInteractionService, View.OnClickListener {
     private static final String ARG_USER = "hr.videomarketing.userparametar";
     private User user;
     private EditText etUserName = null;
@@ -89,14 +89,6 @@ public class UserStatusFragment extends Fragment implements View.OnTouchListener
         etPointsStatus = (MyEditText)view.findViewById(R.id.etPointStatus);
         etPointsStatus.setFocusable(false);
         etSpentPoints = (MyEditText)view.findViewById(R.id.etUsedPoints);
-        spinMonths = (Spinner) view.findViewById(R.id.spinMonth);
-        ArrayAdapter months = ArrayAdapter.createFromResource(getContext(),R.array.months,R.layout.support_simple_spinner_dropdown_item);
-        spinMonths.setAdapter(months);
-        spinMonths.setSelection(0);
-
-        spinMonths.setOnItemSelectedListener(this);
-
-
 
         webShop = (ImageButton)view.findViewById(R.id.imgbtnWebShop);
         webShop.setBackgroundResource(PROVIDER.backgroundPhotoLeft());
@@ -147,47 +139,9 @@ public class UserStatusFragment extends Fragment implements View.OnTouchListener
     }
 
     @Override
-    public void onUserStatusService(User user) {
-        this.user = user;
-        if(!user.isNullObject() && user.getPointStatus() != null){
-            if(spinMonths.getSelectedItemPosition() > 0){
-                String month = Integer.toString(spinMonths.getSelectedItemPosition()-1);
-                for (int i = 0; i < user.getPointStatus().size(); i++) {
-                    if(month.equals(user.getPointStatus().get(i).getMonth())){
-                        etPointsStatus.setText(user.getPointStatus().get(i).getEarned());
-                        etSpentPoints.setText(user.getPointStatus().get(i).getSpent());
-                    }
-                }
-            }
-        }
-        else {
-            Toast.makeText(getActivity(),"Servis nije u funkciji",Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if(user.getPointStatus() != null && i > 0){
-            String item =Integer.toString(i-1);
-            boolean founde = false;
-            log("MonthSelected>"+item);
-            for (int j = 0; j < user.getPointStatus().size(); j++) {
-                if(item.equals(user.getPointStatus().get(j).getMonth())){
-                    etPointsStatus.setText(user.getPointStatus().get(j).getEarned());
-                    etSpentPoints.setText(user.getPointStatus().get(j).getSpent());
-                    founde = true;
-                }
-            }
-            if(!founde){
-                etPointsStatus.setText(Integer.toString(0));
-                etSpentPoints.setText(Integer.toString(0));
-            }
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
+    public void onUserStatusService(int earned, int spent) {
+        etPointsStatus.setText(Integer.toString(earned));
+        etSpentPoints.setText(Integer.toString(spent));
     }
 
     @Override

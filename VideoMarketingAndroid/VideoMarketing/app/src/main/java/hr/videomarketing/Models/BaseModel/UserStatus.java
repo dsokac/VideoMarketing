@@ -11,14 +11,10 @@ import hr.videomarketing.Models.Converts;
  */
 
 public class UserStatus implements Converts{
-    private String month;
-    private String year;
     private String earned;
     private String spent;
 
-    public UserStatus(String month, String year, String earned, String spent) {
-        this.month = month;
-        this.year = year;
+    public UserStatus(String earned, String spent) {
         this.earned = earned;
         this.spent = spent;
     }
@@ -29,24 +25,8 @@ public class UserStatus implements Converts{
 
     public static UserStatus newInstance(JSONObject jsonObject) throws JSONException{
         if(jsonObject == null) return null;
-        UserStatus status = new UserStatus(jsonObject.getString("month"),jsonObject.getString("year"),jsonObject.getString("earned"),jsonObject.getString("spent"));
+        UserStatus status = new UserStatus(jsonObject.getString("earned"),jsonObject.getString("spent"));
         return status;
-    }
-
-    public String getMonth() {
-        return month;
-    }
-
-    public void setMonth(String month) {
-        this.month = month;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
     }
 
     public String getEarned() {
@@ -67,9 +47,7 @@ public class UserStatus implements Converts{
 
     @Override
     public String toJSON() {
-        return "{\"month\":\""+month+'\"'+
-                ", \"year\":\""+year+'\"'+
-                ", \"earned\":\""+earned+'\"'+
+        return "{\"earned\":\""+earned+'\"'+
                 ", \"spent\":\""+spent+'\"'+
                 "}";
     }
@@ -80,11 +58,6 @@ public class UserStatus implements Converts{
         if (!(o instanceof UserStatus)) return false;
 
         UserStatus status = (UserStatus) o;
-
-        if (getMonth() != null ? !getMonth().equals(status.getMonth()) : status.getMonth() != null)
-            return false;
-        if (getYear() != null ? !getYear().equals(status.getYear()) : status.getYear() != null)
-            return false;
         if (getEarned() != null ? !getEarned().equals(status.getEarned()) : status.getEarned() != null)
             return false;
         return getSpent() != null ? getSpent().equals(status.getSpent()) : status.getSpent() == null;
@@ -92,25 +65,14 @@ public class UserStatus implements Converts{
     }
 
     @Override
-    public int hashCode() {
-        int result = getMonth() != null ? getMonth().hashCode() : 0;
-        result = 31 * result + (getYear() != null ? getYear().hashCode() : 0);
-        result = 31 * result + (getEarned() != null ? getEarned().hashCode() : 0);
-        result = 31 * result + (getSpent() != null ? getSpent().hashCode() : 0);
-        return result;
-    }
-
-    @Override
     public UserStatus createNullDefinedObject() {
-        setMonth("");
         setEarned("");
         setSpent("");
-        setYear("");
         return this;
     }
 
     @Override
     public boolean isNullObject() {
-        return equals(new UserStatus().createNullDefinedObject());
+        return equals(new UserStatus());
     }
 }

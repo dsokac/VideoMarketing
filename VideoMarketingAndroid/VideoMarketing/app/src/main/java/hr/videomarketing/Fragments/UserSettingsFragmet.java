@@ -26,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -39,7 +40,7 @@ import hr.videomarketing.MyWebService.Interfaces.OnUpdateUserService;
 import hr.videomarketing.MyWebService.Services.GeographicUnitsService;
 import hr.videomarketing.MyWebService.Services.UpdateUserService;
 import hr.videomarketing.R;
-import hr.videomarketing.Utils.MyFiles;
+import hr.videomarketing.Utils.Files;
 import hr.videomarketing.Utils.UserDataCheck;
 import hr.videomarketing.VideoMarketingApp;
 
@@ -223,8 +224,8 @@ public class UserSettingsFragmet extends Fragment implements GeoServiceInteracti
             return new User();
         }
         changed.setPassword(data);
-        log("user changed object>"+changed.toJSON());
-        log("user compared with>"+userParam.toJSON());
+        //log("user changed object>"+changed.toJSON());
+        //log("user compared with>"+userParam.toJSON());
         if(!changed.equals(userParam))userChanged = true;
         return changed;
     }
@@ -306,7 +307,7 @@ public class UserSettingsFragmet extends Fragment implements GeoServiceInteracti
         if(success){
             Toast.makeText(getActivity(),"Podaci uspiješno ažurirani",Toast.LENGTH_SHORT).show();
             userParam = changedData;
-            MyFiles.getInstance().writeInFile(getActivity(), MyFiles.Files.USER_DATA_FILE,userParam.toJSON());
+            Files.USER_DATA_FILE.write(getActivity(),userParam.toJSON());
             mListener.userUpdated(userParam);
             setUser(userParam);
         }else{

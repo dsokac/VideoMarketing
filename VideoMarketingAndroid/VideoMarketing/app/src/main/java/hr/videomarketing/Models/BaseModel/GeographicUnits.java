@@ -1,5 +1,11 @@
 package hr.videomarketing.Models.BaseModel;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import hr.videomarketing.Models.Converts;
 
 /**
@@ -73,5 +79,18 @@ public class GeographicUnits implements Converts{
     @Override
     public boolean isNullObject() {
         return equals(new GeographicUnits());
+    }
+
+    public static List<GeographicUnits> getListFromJsonArray(String units) {
+        List<GeographicUnits> geographicUnitsList = new ArrayList<>();
+        try {
+            JSONArray array = new JSONArray(units);
+            for (int i = 0; i < array.length(); i++) {
+                geographicUnitsList.add(new GeographicUnits(array.getJSONObject(i).getInt("id"), array.getJSONObject(i).getString("name")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return geographicUnitsList;
     }
 }

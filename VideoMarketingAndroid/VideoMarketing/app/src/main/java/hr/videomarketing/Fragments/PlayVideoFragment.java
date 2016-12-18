@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -19,7 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import hr.videomarketing.DMVideoView.DMWebVideoView;
+import hr.videomarketing.Models.BaseModel.User;
 import hr.videomarketing.Models.BaseModel.Video;
+import hr.videomarketing.MyWebService.Interfaces.OnVideoInteractionService;
+import hr.videomarketing.MyWebService.Services.CommentVideoService;
+import hr.videomarketing.MyWebService.Services.LikeVideoService;
+import hr.videomarketing.MyWebService.Services.VideoSeenService;
+import hr.videomarketing.MyWebService.VideoActions;
 import hr.videomarketing.R;
 import hr.videomarketing.Utils.DialogStateAdapter;
 import hr.videomarketing.Utils.PlayVideoFragmentDialog;
@@ -38,11 +45,13 @@ import static hr.videomarketing.VideoMarketingApp.hideSoftKeyboard;
  * Use the {@link PlayVideoFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listener, View.OnClickListener, View.OnTouchListener, PlayVideoFragmentDialog.PlayVideoFragmentDialogInterface {
-    private static final String ARG_VIDEO = "hr.videomarketing.video";
+public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listener, View.OnClickListener, View.OnTouchListener, PlayVideoFragmentDialog.PlayVideoFragmentDialogInterface, View.OnFocusChangeListener, OnVideoInteractionService {
+    private static final String ARG_VIDEO = "hr.videomarketing.playfragment.video";
+    private static final String ARG_USER = "hr.videomarketing.playfragment.user";
     private Video video;
+    private User user;
     private int likeStatus=0;
-    private String comment = null;
+    private String comment = "";
     private boolean commentAdd;
     private EditText etComment;
     private ImageButton imgbtnLike;
@@ -59,15 +68,19 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
     PlayVideoFragmentDialog dialog;
     private boolean seeked = false;
 
+    int likeSpam=0;
+    int commentSpamer=0;
+
     private OnFragmentInteractionListener mListener;
 
     public PlayVideoFragment() {
         // Required empty public constructor
     }
-    public static PlayVideoFragment newInstance(String video) {
+    public static PlayVideoFragment newInstance(String video, String user) {
         PlayVideoFragment fragment = new PlayVideoFragment();
         Bundle args = new Bundle();
         args.putString(ARG_VIDEO, video);
+        args.putString(ARG_USER,user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,6 +90,11 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             this.video = Video.newInstance(getArguments().getString(ARG_VIDEO));
+            this.user = User.newInstance(getArguments().getString(ARG_USER));
+        }
+        else{
+            this.video = new Video();
+            this.user = new User();
         }
 
     }
@@ -94,6 +112,7 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
         dmWebVideoView = (DMWebVideoView) view.findViewById(R.id.dmVideoViewMain);
         dmWebVideoView.setEventListener(this);
         etComment = (EditText)view.findViewById(R.id.etComment);
+        etComment.setOnFocusChangeListener(this);
         imgbtnLike = (ImageButton)view.findViewById(R.id.imbtnLike);
         imgbtnLike.setOnClickListener(this);
         imgbtnDislike = (ImageButton)view.findViewById(R.id.imbtnDislike);
@@ -141,7 +160,8 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
     @Override
     public void onResume() {
         super.onResume();
-        commentAdd = false;
+        likeSpam=0;
+        commentSpamer=0;
     }
 
     @Override
@@ -154,16 +174,6 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
     public void onPause() {
         super.onPause();
         dmWebVideoView.pause();
-        log("onPause>CommentStatus>"+commentAdd);
-        if(comment != null && commentAdd){
-            log("onPause>Comment>"+comment);
-            mListener.onUserComment(comment, video);
-        }
-        log("onPause>LikeStatus>"+likeStatus);
-        log("onPause>VideoLikeStatus>"+video.getUserLike());
-        if(likeStatus != video.getUserLike()){
-            mListener.onUserLike(video);
-        }
     }
 
     @Override
@@ -187,9 +197,9 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
                     likeContainer.setVisibility(View.VISIBLE);
                     setVideoLike(0);
                     video.setSeen(1);
-                    mListener.onVideoEnded(video);
+                    addVideoView();
                     Toast.makeText(getActivity(),getResources().getString(R.string.toast_message_view_count),Toast.LENGTH_SHORT).show();
-                    log("video ended>view count");
+                    mListener.updateVideo(video);
                 }
                 seekContainer.setVisibility(View.INVISIBLE);
                 log("dailymotion>videoview>event>end");
@@ -284,6 +294,9 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
                         video.setUserLike(1);
                         setVideoLike(1);
                     }
+                    if(!addLike()){
+                        Toast.makeText(getActivity(),"Stop spam!",Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else{
                     Toast.makeText(getActivity(),"Morate prvo pogledati video da možete lajkati",Toast.LENGTH_SHORT).show();
@@ -299,6 +312,9 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
                         video.setUserLike(-1);
                         setVideoLike(-1);
                     }
+                    if(!addLike()){
+                        Toast.makeText(getActivity(),"Stop spam!",Toast.LENGTH_SHORT).show();
+                    }
                 }
                 else{
                     Toast.makeText(getActivity(),"Morate prvo pogledati video da možete lajkati",Toast.LENGTH_SHORT).show();
@@ -307,11 +323,11 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
             case R.id.imgbtnAddComment:
                 if(dmWebVideoView.ended || video.getSeen()==1){
                     String comment = etComment.getText().toString();
-                    if(comment != null && !comment.equals("") && !comment.equals(" ")){
-                        commentAdd = true;
-                        this.comment = comment;
-                        etComment.setText("");
-                        etComment.setHint(comment);
+                    if(!comment.equals("") && comment.length()>1){
+                        Toast.makeText(getActivity(),"Komentar: "+comment+" dodan",Toast.LENGTH_SHORT).show();
+                        if(addVideoComment(comment)){
+                            etComment.setText("");
+                        }
                     }
                     else{
                         Toast.makeText(getActivity(),"Neispravan komentar",Toast.LENGTH_SHORT).show();
@@ -341,11 +357,34 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
         if(dialog != null && dialog.isVisible())dialog.dismiss();
     }
 
+    @Override
+    public void onFocusChange(View view, boolean b) {
+        if(view.getId() == etComment.getId()){
+            if(b){
+                etComment.setText("");
+            }
+        }
+    }
+
+    @Override
+    public void onVideoInteractionService(VideoActions action, int succes, String message) {
+        if(succes == 1){
+            switch (action){
+                case SEEN:
+                    log("VideoService>Seen>success");
+                    break;
+                case LIKE:
+                    log("VideoService>Like>success");
+                    break;
+                case COMMENT:
+                    log("VideoService>Comment>success");
+                    break;
+            }
+        }
+    }
+
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onVideoEnded(Video video);
-        void onUserComment(String comment,Video video);
-        void onUserLike(Video video);
+        void updateVideo(Video video);
     }
     private void setVideoLike(int like){
         switch (like){
@@ -362,7 +401,47 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
                 imgbtnLike.setColorFilter(Color.WHITE);
         }
     }
+    private void addVideoView(){
+        new VideoSeenService(this,Long.toString(user.getId()),Integer.toString(video.getId())).execute();
+    }
+    private boolean addVideoComment(String comment){
+        if(commentSpamer == 0){
+            handleSpam("comment",10000);
+        }
+        if(commentSpamer<3){
+            new CommentVideoService(this,Integer.toString(video.getId()),Long.toString(user.getId()),comment).execute();
+            commentSpamer++;
+            return true;
+        }
+        return false;
+    }
+    private boolean addLike(){
+        if(likeSpam == 0){
+            handleSpam("like",10000);
+        }
+        if(likeSpam<4){
+            new LikeVideoService(this,Long.toString(user.getId()),Integer.toString(video.getId()),Integer.toString(video.getUserLike())).execute();
+            likeSpam++;
+            return true;
+        }
+        return false;
+    }
     private void log(String text){
         VideoMarketingApp.log("Fragment>PlayVideo>"+text);
+    }
+    private void handleSpam(final String action, int duration){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                switch (action){
+                    case "like":
+                        likeSpam = 0;
+                        break;
+                    case "comment":
+                        commentSpamer = 0;
+                        break;
+                }
+            }
+        },duration);
     }
 }

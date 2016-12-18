@@ -23,7 +23,7 @@ import java.net.URL;
  * Created by bagy on 28.10.2016..
  */
 
-public abstract class WebService extends AsyncTask<Void,Void,Void> implements WebServiceInterface{
+public abstract class WebService<T,E,G> extends AsyncTask<T,E,G> implements WebServiceInterface{
 
     private URL urlC;
     private HttpURLConnection httpURLConnection;
@@ -38,7 +38,7 @@ public abstract class WebService extends AsyncTask<Void,Void,Void> implements We
     private boolean closeProgresssDialog = true;
     private WebServiceException error = null;
     @Override
-    protected Void doInBackground(Void... voids) {
+    protected G doInBackground(T... voids) {
         try {
             if(getContext() != null && !haveNetworkconnection(getContext())){
                 serviceUnsuccessful(new WebServiceException(WebServiceException.NO_INTERNET_CONNECTION),"");
@@ -63,7 +63,7 @@ public abstract class WebService extends AsyncTask<Void,Void,Void> implements We
     }
 
     @Override
-    protected void onPostExecute(Void o) {
+    protected void onPostExecute(G o) {
         super.onPostExecute(o);
         if(progressDialog !=null && closeProgresssDialog){
             progressDialog.dismiss();
@@ -89,7 +89,7 @@ public abstract class WebService extends AsyncTask<Void,Void,Void> implements We
         }
         String url =service+convertParamToUrl();
 
-        //log("url: "+url);
+        log("url: "+url);
         try {
             urlC = new URL(url);
             httpURLConnection = (HttpURLConnection) urlC.openConnection();
@@ -104,7 +104,7 @@ public abstract class WebService extends AsyncTask<Void,Void,Void> implements We
             bufferReader.close();
             is.close();
             retrievedData = strngBuffer.toString();
-            //log("result>"+retrievedData);
+            log("result>"+retrievedData);
             return new JSONObject(retrievedData);
         } catch (MalformedURLException e) {
             throw new WebServiceException(WebServiceException.WRONG_SERVICE_PATH,e);

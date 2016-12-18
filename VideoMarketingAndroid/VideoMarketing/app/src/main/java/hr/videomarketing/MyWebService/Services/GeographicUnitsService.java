@@ -1,10 +1,6 @@
 package hr.videomarketing.MyWebService.Services;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.ArrayList;
-import java.util.List;
 import hr.videomarketing.Models.BaseModel.GeographicUnits;
 import hr.videomarketing.MyWebService.Interfaces.GeoServiceInteraction;
 import hr.videomarketing.MyWebService.Utils.Param;
@@ -39,16 +35,12 @@ public class GeographicUnitsService extends VideoMarketingWebService {
             return;
         }
         try{
-            JSONArray units = result.getJSONArray("data");
-            List<GeographicUnits> geographicUnitsList = new ArrayList<>();
-            for (int i = 0; i < units.length(); i++) {
-                geographicUnitsList.add(new GeographicUnits(units.getJSONObject(i).getInt("id"), units.getJSONObject(i).getString("name")));
-            }
-            myListener.geoServiceDone(geographicUnitsList);
+            myListener.geoServiceDone(GeographicUnits.getListFromJsonArray(result.getString("data")));
         }catch (JSONException jsonE){
             onJSONConversionError(jsonE);
         }
     }
+
 
     @Override
     public Param[] serviceParam() {

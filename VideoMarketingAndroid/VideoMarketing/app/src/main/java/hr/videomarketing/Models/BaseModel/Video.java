@@ -1,9 +1,7 @@
 package hr.videomarketing.Models.BaseModel;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.widget.ImageButton;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,14 +13,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import hr.videomarketing.Models.Converts;
-import hr.videomarketing.MyWebService.DownloadVideoThumbnail;
 import hr.videomarketing.MyWebService.Interfaces.OnVideoThumbnailDownloaded;
-import hr.videomarketing.R;
 import hr.videomarketing.VideoMarketingApp;
-
-import static hr.videomarketing.VideoMarketingApp.ACTIVE_FRAGMENT;
-import static hr.videomarketing.VideoMarketingApp.HomeActivity;
-import static hr.videomarketing.VideoMarketingApp.log;
 
 /**
  * Created by bagy on 7.11.2016..
@@ -248,10 +240,7 @@ public class Video implements Converts{
 
     @Override
     public String toString() {
-        String foo = title;
-        if(foo.contains("\"")){
-            title = foo.replace("\"","");
-        }
+        log("title>"+title);
         return "{" +
                 "\"id\":" + id +
                 ", \"dmId\":\""+dmId+'\"'+
@@ -284,7 +273,7 @@ public class Video implements Converts{
 
     @Override
     public String toJSON() {
-
+        log("toJson>"+toString());
         return toString();
     }
 
@@ -311,5 +300,8 @@ public class Video implements Converts{
         for (OnVideoThumbnailDownloaded l:list) {
             l.onImageDownloadedSuccessful();
         }
+    }
+    private void log(String t){
+        VideoMarketingApp.log("VideoClass>"+t);
     }
 }

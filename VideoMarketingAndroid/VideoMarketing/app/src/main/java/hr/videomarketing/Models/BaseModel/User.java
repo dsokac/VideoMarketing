@@ -1,9 +1,7 @@
 package hr.videomarketing.Models.BaseModel;
 
-import android.content.Context;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hr.videomarketing.Models.Converts;
-import hr.videomarketing.Utils.MyFiles;
 import hr.videomarketing.MyWebService.Utils.Param;
 import hr.videomarketing.VideoMarketingApp;
 
@@ -30,8 +27,7 @@ public class User implements Converts{
     private String email=null;
     private String mobile_number=null;
     private GeographicUnits geographicUnits=null;
-    private boolean logedIn = false;
-    private List<UserStatus> pointStatus;
+    private UserStatus pointStatus;
 
     private User(long id, String username, String password, String email) {
         this.id = id;
@@ -59,7 +55,6 @@ public class User implements Converts{
             user.setPassword(jsonObject.getString("password"));
             user.setEmail(jsonObject.getString("email"));
             user.setPhoneNumber(jsonObject.getString("mobile_number"));
-            if(jsonObject.has("logedIn"))user.setLogedIn(jsonObject.getBoolean("logedIn"));
             user.setGeographicUnits(new GeographicUnits(jsonObject.getJSONObject("geographic_unit").getInt("id"),jsonObject.getJSONObject("geographic_unit").getString("name")));
             if(user.isCorrect()){
                 Log.i("videomark/User: ","newInstance: "+user.toString());
@@ -148,7 +143,7 @@ public class User implements Converts{
         return geographicUnits;
     }
 
-    public void setPointStatus(List<UserStatus> pointStatus) {
+    public void setPointStatus(UserStatus pointStatus) {
         this.pointStatus = pointStatus;
     }
 
@@ -194,7 +189,7 @@ public class User implements Converts{
 
         if(this != null){
             List<Param> params = new ArrayList<>();
-            if(getId() != 0)params.add(new Param("id",Long.toString(getId())));
+            if(getId() != -1)params.add(new Param("id",Long.toString(getId())));
             params.add(new Param("name",getName()));
             params.add(new Param("surname",getSurname()));
             params.add(new Param("birthday",getBirthday()));
@@ -210,25 +205,8 @@ public class User implements Converts{
         return null;
     }
 
-    public boolean isLogedIn() {
-        return logedIn;
-    }
-
-    public void setLogedIn(boolean logedIn) {
-        this.logedIn = logedIn;
-    }
-    public List<UserStatus> getPointStatus(){
+    public UserStatus getPointStatus(){
         return pointStatus;
-    }
-    public void setStatus(JSONArray jsonArray){
-        this.pointStatus = new ArrayList<>();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try{
-                this.pointStatus.add(UserStatus.newInstance(jsonArray.getJSONObject(i)));
-            }catch (JSONException je){
-                je.printStackTrace();
-            }
-        }
     }
 
     @Override
@@ -242,7 +220,6 @@ public class User implements Converts{
                 ",\"username\":\"" + username + '\"' +
                 ",\"password\":\"" + password + '\"' +
                 ",\"email\":\"" + email + '\"' +
-                ",\"logedIn\":\""+Boolean.toString(logedIn)+'\"'+
                 ",\"mobile_number\":\"" + mobile_number + '\"' +
                 ",\"geographic_unit\":{"+
                 "\"id\":"+ geographicUnits.getId()+
@@ -255,7 +232,7 @@ public class User implements Converts{
 
     @Override
     public User createNullDefinedObject() {
-        setId(0);
+        setId(-1);
         setName("");
         setSurname("");
         setBirthday("");
@@ -281,7 +258,6 @@ public class User implements Converts{
         newObject.setPassword(getPassword());
         newObject.setPhoneNumber(getPhoneNumber());
         newObject.setGeographicUnits(getGeographicUnits());
-        newObject.setLogedIn(isLogedIn());
         newObject.setPointStatus(getPointStatus());
         return newObject;
     }

@@ -1,4 +1,5 @@
 package hr.videomarketing.Utils;
+import android.text.TextUtils;
 import android.util.Patterns;
 
 
@@ -33,14 +34,8 @@ public class UserDataCheck{
         return password.length()<6?false:true;
     }
     public boolean checkPhoneNumber(String number){
-        if(number.length() < 10) return false;
-        String pattern = "+385";
-        for (int i = 0; i < pattern.length(); i++) {
-            if(pattern.charAt(i) != number.charAt(i)){
-                return false;
-            }
-        }
-        return true;
+        if(number.length() < 7 || number.charAt(0)!= '9') return false;
+        return TextUtils.isDigitsOnly(number);
     }
 
 

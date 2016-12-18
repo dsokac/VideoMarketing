@@ -183,7 +183,7 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/etPhoneNumber" />
+            app:layout_constraintTop_toBottomOf="@+id/phoneNumberContainer" />
 
         <TextView
             android:text="@string/message_lbl_to_log_in"
@@ -199,29 +199,49 @@
             android:text="@string/etPhoneNumberLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/ywPhoneNUmber"
-            app:layout_constraintLeft_toLeftOf="@+id/etPhoneNumber"
-            android:layout_marginStart="8dp"
+            android:id="@+id/twPhoneNUmber"
+            app:layout_constraintLeft_toLeftOf="@+id/phoneNumberContainer"
             android:labelFor="@+id/etPhoneNumber"
             app:layout_constraintTop_toBottomOf="@+id/etPasswordCheck"
             android:layout_marginTop="16dp"
-            android:textAllCaps="true" />
+            android:textAllCaps="true"
+            android:layout_marginStart="8dp" />
 
-        <hr.videomarketing.CustomViews.MyEditText
-            android:inputType="phone"
-            android:ems="10"
-            android:id="@+id/etPhoneNumber"
-            android:hint="@string/etPhoneNumberHint"
-            android:visibility="visible"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="268dp"
+            android:id="@+id/phoneNumberContainer"
+            app:layout_constraintTop_toBottomOf="@+id/twPhoneNUmber"
             android:layout_height="45dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintRight_toRightOf="parent"
             android:layout_marginStart="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ywPhoneNUmber"
-            android:layout_marginTop="8dp"
-            android:paddingLeft="@dimen/etRegistrationPaddingLeft" />
+            android:layout_marginEnd="16dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="8dp">
+
+            <hr.videomarketing.CustomViews.MyEditText
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/etPhonePrefix"
+                android:text="@string/lblPhonePrefix"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textIsSelectable="false"
+                android:editable="false"
+                android:paddingLeft="5dp" />
+
+            <hr.videomarketing.CustomViews.MyEditText
+                android:inputType="phone"
+                android:ems="10"
+                android:id="@+id/etPhoneNumber"
+                android:visibility="visible"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                app:layout_constraintTop_toBottomOf="@+id/twPhoneNUmber"
+                android:paddingLeft="@dimen/etRegistrationPaddingLeft"
+                android:layout_weight="2" />
+
+        </LinearLayout>
 
         <hr.videomarketing.CustomViews.MyEditText
             android:layout_width="82dp"
@@ -305,14 +325,14 @@
             android:inputType="textPassword"
             android:ems="10"
             android:id="@+id/etPasswordCheck"
-            app:layout_constraintTop_toBottomOf="@+id/twRetypePassword"
+            android:layout_width="268dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/twRetypePassword"
             android:layout_marginStart="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_width="268dp"
-            android:layout_height="45dp" />
+            android:layout_marginEnd="16dp"
+            app:layout_constraintRight_toRightOf="parent" />
 
 
     </android.support.constraint.ConstraintLayout>

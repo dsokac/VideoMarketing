@@ -19,7 +19,7 @@ import hr.videomarketing.Models.BaseModel.User;
 import hr.videomarketing.MyWebService.Interfaces.LogInServiceInteraction;
 import hr.videomarketing.MyWebService.Services.LogInService;
 import hr.videomarketing.R;
-import hr.videomarketing.Utils.MyFiles;
+import hr.videomarketing.Utils.Files;
 
 import static hr.videomarketing.VideoMarketingApp.PROVIDER;
 import static hr.videomarketing.VideoMarketingApp.hideSoftKeyboard;
@@ -56,7 +56,7 @@ public class LogInFragment extends Fragment implements Button.OnClickListener, L
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             String userString = getArguments().getString(ARG_USER);
-            user = userString != null && !userString.equals("")?User.newInstance(userString):null;
+            user = userString != null && !userString.equals("")?User.newInstance(userString):new User();
         }
     }
 
@@ -140,8 +140,7 @@ public class LogInFragment extends Fragment implements Button.OnClickListener, L
 
     @Override
     public void onLogInSuccessful(User user) {
-        user.setLogedIn(true);
-        MyFiles.getInstance().writeInFile(getActivity(), MyFiles.Files.USER_DATA_FILE, user.toJSON());
+        Files.USER_DATA_FILE.write(getActivity(),user.toJSON());
         mListener.userLogInSuccessful();
     }
 

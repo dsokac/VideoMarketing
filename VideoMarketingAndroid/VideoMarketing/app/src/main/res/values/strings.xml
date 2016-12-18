@@ -130,5 +130,7 @@
     <string name="toolbar_action_refresh_videolist">Osvježi listu</string>
     <string name="toast_message_no_new_videos">Nema novih videa</string>
     <string name="toast_message_view_count">Pogled videa zabilježen</string>
+    <string name="lblPhonePrefix">+385</string>
+    <string name="message_error_on_getgeolocations">Greška prilikom dohvaćanja županija</string>
 
 </resources>

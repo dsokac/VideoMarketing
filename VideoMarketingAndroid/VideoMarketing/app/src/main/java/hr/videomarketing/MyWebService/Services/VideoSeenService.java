@@ -11,7 +11,7 @@ import static hr.videomarketing.MyWebService.Services.VideoSeenService.URLParam.
  * Created by bagy on 24.11.2016..
  */
 
-public class VideoSeenService extends VideoInteractionService {
+public class VideoSeenService extends VideoInteractionService{
     Param[] params;
     public VideoSeenService(OnVideoInteractionService myListener, String userId, String videoId) {
         super(myListener);

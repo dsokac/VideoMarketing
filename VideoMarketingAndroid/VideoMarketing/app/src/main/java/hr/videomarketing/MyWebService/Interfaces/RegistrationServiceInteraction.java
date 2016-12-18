@@ -5,5 +5,5 @@ package hr.videomarketing.MyWebService.Interfaces;
  */
 
 public interface RegistrationServiceInteraction {
-    void onRegistraionService(boolean success,String message);
+    void onRegistraionService(boolean success,String message, long id);
 }

@@ -2,29 +2,21 @@ package hr.videomarketing;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 
 import hr.videomarketing.Fragments.LogInFragment;
 import hr.videomarketing.Fragments.RegistrationFragment;
-import hr.videomarketing.MyWebService.Interfaces.CheckPhonNuServiceInteraction;
-import hr.videomarketing.MyWebService.Services.CheckPhoneNumberService;
-import hr.videomarketing.Utils.MyFiles;
 
 import static hr.videomarketing.VideoMarketingApp.PROVIDER;
-import static hr.videomarketing.VideoMarketingApp.replaceFragment;
 import static hr.videomarketing.VideoMarketingApp.replaceFragmentWithoutBackStack;
 
 public class RegistrationActivity extends AppCompatActivity
@@ -45,7 +37,7 @@ public class RegistrationActivity extends AppCompatActivity
         }
         if(exist){
             String user = extras.getString(getResources().getString(R.string.intent_extra_user));
-            redirectToLogIn(user);
+            redirectToLogIn();
         }
     }
 
@@ -105,14 +97,6 @@ public class RegistrationActivity extends AppCompatActivity
             redirectToRegistration();
         }
     }
-
-    //user registration via service--async
-    @Override
-    public void redirectToLogIn(String user) {
-        LogInFragment frag = LogInFragment.newInstance(user);
-        replaceFragmentWithoutBackStack(frag,R.id.fragmentContainerRegistration,getSupportFragmentManager());
-    }
-
     @Override
     public void redirectToRegistration() {
         RegistrationFragment frag = RegistrationFragment.newInstance(this.phoneNumber);
@@ -159,6 +143,17 @@ public class RegistrationActivity extends AppCompatActivity
            setPhoneNumber(manager.getLine1Number());
            redirectToRegistration();
         }
+    }
+
+    @Override
+    public void redirectToLogIn() {
+        LogInFragment frag = LogInFragment.newInstance("");
+        replaceFragmentWithoutBackStack(frag,R.id.fragmentContainerRegistration,getSupportFragmentManager());
+    }
+
+    @Override
+    public void redirecToHomeActivity() {
+        userLogInSuccessful();
     }
 
     private void log(String text){
