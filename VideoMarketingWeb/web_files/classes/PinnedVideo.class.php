@@ -152,4 +152,21 @@ class PinnedVideo extends AbstractModel {
         }
     }
     
+    public function getPinOfferForVideo(){
+      $query = Db::makeQuery("select", array($this->t), array($this->tPinOffer), "{$this->tVideo} = {$this->video->getId()} and deleted = 0 order by {$this->tCreatedAt} desc");
+      $rows = Db::query($query);
+      if($rows != null){
+        foreach($rows as $row){
+           $pinOfferID = intval($row[$this->tPinOffer]);
+           $pinOffer = new PinOffer($pinOfferID);
+           if($pinOffer->getActive() == 1){
+             return $pinOffer->getId();
+           }
+        }
+      }
+      return -1;
+    
+    }
+    
+    
 }
