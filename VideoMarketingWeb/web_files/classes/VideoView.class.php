@@ -136,7 +136,11 @@ class VideoView extends AbstractModel {
         if($this->doesViewExists()){
             $addView = new VideoView($this->user->getId(),$this->video->getId());
             $addView->count += 1;
-            return $addView->save();
+            if($this->willGetPoint()){
+              $output = $addView->addPointsToUser();
+            }
+            $output = $addView->save();
+            return $output;
         } else {
             $result = $this->create();
             if($result != 0){
@@ -145,6 +149,7 @@ class VideoView extends AbstractModel {
             return $result;
         }        
     }
+    
     
     /**
      * Method adds points to user by using Telecomm Users class and only if the user viewed video once.
@@ -178,5 +183,16 @@ class VideoView extends AbstractModel {
         $query = Db::makeQuery("select", array($this->t), array("sum({$this->tCount})"),"{$this->tVideo} = {$this->video->getId()} and deleted = 0 group by {$this->tVideo}");
         $result = Db::query($query);
         return intval($result[0]["sum({$this->tCount})"]);
+    }
+    
+    private function willGetPoint(){
+       $query = Db::makeQuery("select", array($this->t), array($this->tCreatedAt, $this->tUpdatedAt),"{$this->tVideo} = {$this->video->getId()} and {$this->tUser} = {$this->user->getId()} and deleted = 0 order by {$this->tCreatedAt} desc limit 1");
+       $result = Db::query($query);
+       $lastDateCreatedAtString = $result[0][$this->tCreatedAt];
+       $lastDateUpdatedAtString = $result[0][$this->tUpdatedAt];
+       var_dump($lastDateUpdatedAtString);
+       $lastDate = date_create_from_format(MyGlobal::$timeFormatDB, $lastDateUpdatedAtString == NULL ? $lastDateCreatedAtString : $lastDateUpdatedAtString);
+       $currentDate = new DateTime();
+       return $currentDate->format("Y") != $lastDate->format("Y") || $currentDate->format("Y") == $lastDate->format("Y") && $currentDate->format("m") != $lastDate->format("m") || $currentDate->format("Y") == $lastDate->format("Y") && $currentDate->format("m") == $lastDate->format("m") && $currentDate->format("j") != $lastDate->format("j");
     }
 }
