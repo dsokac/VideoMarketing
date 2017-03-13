@@ -140,7 +140,9 @@ class VideoTag extends AbstractModel {
                 $newPinnedVideo = new PinnedVideo();
                 $newPinnedVideo->setVideo($newVideo->getId());
                 $newPinnedVideo->checkIfVideoIsSponsored();
-                array_push($list, $newPinnedVideo->getVideo());
+                if($newPinnedVideo->isSponsored()){
+                  array_push($list, $newPinnedVideo->getVideo());
+                }
             }
         }       
         
