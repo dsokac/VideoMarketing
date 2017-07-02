@@ -16,7 +16,7 @@ class Db {
     
     const DBNAME = "u832073829_baza";
     const DBUSER = "u832073829_user";
-    const DBPASSWORD = "KsJmCMLB8g";
+    const DBPASSWORD = "Ni3SxA3A6PaY";
     const DBSERVER = "localhost";
     
     /**
