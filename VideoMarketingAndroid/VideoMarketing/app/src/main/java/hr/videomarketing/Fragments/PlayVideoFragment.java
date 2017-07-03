@@ -3,6 +3,8 @@ package hr.videomarketing.Fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -96,7 +98,7 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
             this.video = new Video();
             this.user = new User();
         }
-
+        setRetainInstance(true);
     }
 
     @Override
@@ -177,6 +179,20 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
+
+        }
+    }
+
+    @Override
     public void onEvent(String event) {
         switch (event){
             case "apiready":
@@ -246,6 +262,13 @@ public class PlayVideoFragment extends Fragment implements DMWebVideoView.Listen
                 break;
             case "durationchanged":
                 log("event>durationchanged");
+                break;
+            case "fullscreenchange":
+                if(dmWebVideoView.isFullscreen()){
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                }else{
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }
                 break;
         }
     }

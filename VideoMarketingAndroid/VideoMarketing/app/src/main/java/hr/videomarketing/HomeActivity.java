@@ -3,6 +3,7 @@ package hr.videomarketing;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -34,11 +35,13 @@ import hr.videomarketing.Models.BaseModel.Video;
 import hr.videomarketing.MyWebService.Interfaces.OnUpdateUserProviderService;
 import hr.videomarketing.MyWebService.Interfaces.VideoListInteractionService;
 import hr.videomarketing.MyWebService.Services.AddUserAndProvider;
+import hr.videomarketing.MyWebService.Services.ApplicationStateService;
 import hr.videomarketing.MyWebService.Services.VideoListService;
 import hr.videomarketing.Utils.Files;
 import hr.videomarketing.Utils.VideoMarketingAppDialog;
 
 import static hr.videomarketing.VideoMarketingApp.ACTIVE_FRAGMENT;
+import static hr.videomarketing.VideoMarketingApp.HomeActivity;
 import static hr.videomarketing.VideoMarketingApp.PROVIDER;
 import static hr.videomarketing.VideoMarketingApp.replaceFragment;
 
@@ -48,7 +51,10 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
                                                                 UserStatusFragment.OnFragmentInteractionListener,
                                                                 VideoListLikedFragment.OnFragmentInteractionListener,
                                                                 VideoListSeenFragment.OnFragmentInteractionListener,
-                                                                PlayVideoFragment.OnFragmentInteractionListener, OnUpdateUserProviderService, VideoListInteractionService{
+                                                                PlayVideoFragment.OnFragmentInteractionListener,
+                                                                OnUpdateUserProviderService,
+                                                                VideoListInteractionService,
+                                                                ApplicationStateService.ApplicationStateListener{
 
 
 
@@ -68,6 +74,8 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_layout);
+        new ApplicationStateService(this).execute();
+
         activeUser = new User();
         lastVideo = new Video();
         videos = new Video[0];
@@ -120,6 +128,12 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
         });
 
 
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -280,9 +294,10 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
         startVideo(video);
     }
     private void startVideo(Video vid){
-        lastVideo = vid;
-        PlayVideoFragment frag = PlayVideoFragment.newInstance(vid.toJSON(),activeUser.toJSON());
-        changeFragment(frag);
+        Intent i = new Intent(HomeActivity.this,PlayVideoActivity.class);
+        i.putExtra(getResources().getString(R.string.intent_params_user),activeUser.toJSON());
+        i.putExtra(getResources().getString(R.string.intent_params_video),vid.toJSON());
+        startActivity(i);
     }
 
     @Override
@@ -389,5 +404,23 @@ public class HomeActivity extends AppCompatActivity implements  VideoListFragmen
     public void setRefreshButtonVisibility(boolean visibility) {
         this.refreshButton = visibility;
         invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onApplicationStateReceived(int state) {
+        log("State "+state);
+        if(state == 1){
+            VideoMarketingAppDialog prompt = new VideoMarketingAppDialog();
+            prompt.setText("Održavanje u tijeku");
+            prompt.setTitle("Obavijest");
+            prompt.setPostivieButtonText("Izlaz");
+            prompt.setPositiveButton(new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    HomeActivity.this.finish();
+                }
+            });
+            prompt.show(getSupportFragmentManager(),"MaintenanceDialog");
+        }
     }
 }
