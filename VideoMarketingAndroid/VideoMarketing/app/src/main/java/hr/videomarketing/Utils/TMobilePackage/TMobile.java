@@ -34,7 +34,7 @@ public class TMobile extends ProviderFactory {
 
     @Override
     public String getLink() {
-        return "https://www.hrvatskitelekom.hr/";
+        return "https://moj.hrvatskitelekom.hr";
     }
 
     @Override
