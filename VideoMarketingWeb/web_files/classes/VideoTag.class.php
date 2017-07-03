@@ -140,7 +140,9 @@ class VideoTag extends AbstractModel {
                 $newPinnedVideo = new PinnedVideo();
                 $newPinnedVideo->setVideo($newVideo->getId());
                 $newPinnedVideo->checkIfVideoIsSponsored();
-                array_push($list, $newPinnedVideo->getVideo());
+                if($newPinnedVideo->isSponsored()){
+                  array_push($list, $newPinnedVideo->getVideo());
+                }
             }
         }       
         
@@ -153,9 +155,35 @@ class VideoTag extends AbstractModel {
         $videoView->setUser(intval($userId));
         foreach($list as $element){
             $videoView->setVideo($element->getId());
+            $videoViewSum = 0;
             if($videoView->doesViewExists()){
               $videoView = new VideoView(intval($userId), intval($element->getId()));
+              $videoViewSum = $videoView->getSumViews();
             }
+            $pinnedVideo = new PinnedVideo();
+            $pinnedVideo->setVideo($element->getId());
+            $pinOfferID = $pinnedVideo->getPinOfferForVideo();
+            $orderCoef = 0;
+            $days = "undefined";
+            $viewsDiff = "undefined";
+            if($pinOfferID != -1){
+              $pinOffer = new PinOffer($pinOfferID);
+              $pinOfferViews = $pinOffer->getViews();
+              $viewsDiff = $pinOfferViews - $videoViewSum;
+              $currentDate = new DateTime();
+              $offerEnd = date_create_from_format(MyGlobal::$timeFormat, $pinOffer->getEndTime());
+              $days =  $offerEnd->getTimestamp() - $currentDate->getTimestamp();
+              if($days != 0){
+                $days = $days / 60; //minutes
+                $days = $days / 60; //hours
+                $days = $days / 24; //days
+                $days = ceil($days);
+                $orderCoef = $viewsDiff / $days;
+              } else {
+                $orderCoef = 0;
+              }
+            }
+            $orderCoef = round($orderCoef, 3);
             $newArray = array(
                 "id" => $element->getId(),
                 "title" => $element->getTitle(),
@@ -167,10 +195,26 @@ class VideoTag extends AbstractModel {
                 "points" => $element->getPoints(),
                 "seen" => $videoView->doesViewExists() ? 1 : 0,
                 "user_like" => $videoView->doesViewExists() ? $videoView->getVideolike() : 0,
-                "created_at" => $element->getCreatedAt()
+                "created_at" => $element->getCreatedAt(),
+                "coef" => $orderCoef,
+                "days_till_end" => $days,
+                "views_till_end" => $viewsDiff
             );
             array_push($newJSON["data"], $newArray);
         }
+        
+        for( $i = count($newJSON["data"]) - 1; $i > 0; $i--){
+          for($j = 0; $j < $i; $j++){
+            $currentJson = $newJSON["data"][$j];
+            $tempJson = $newJSON["data"][$i];
+            if($currentJson["coef"] < $tempJson["coef"]){
+              $newJSON["data"][$i] = $newJSON["data"][$j];
+              $newJSON["data"][$j] = $tempJson;
+            }
+          }
+        }
+        
+        
         return $newJSON;
     }
 }

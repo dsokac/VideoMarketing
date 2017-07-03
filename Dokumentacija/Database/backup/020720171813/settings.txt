@@ -1,0 +1,4 @@
+    const DBNAME = "u832073829_baza";
+    const DBUSER = "u832073829_user";
+    const DBPASSWORD = "Ni3SxA3A6PaY";
+    const DBSERVER = "localhost";

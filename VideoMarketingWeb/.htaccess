@@ -22,4 +22,5 @@ RewriteRule ^webservice/add_telecomm_user?$ web_files/webservices/add_telecomm_u
 RewriteRule ^webservice/check_phone_number?$ web_files/webservices/check_phone_number.php [NC,L]
 RewriteRule ^webservice/points_stats?$ web_files/webservices/points_stats.php [NC,L]
 RewriteRule ^admin/videos$ web_files/php_scripts/admin_videos.php [NC,L]
+RewriteRule ^webservice/maintenance_notice?$ web_files/webservices/maintenance_notice.php [NC,L]
 #RewriteRule ^ajax/video/add$ web_files/ajax_scripts/admin_addNewVideo.ajax.php?title=$1&url=$2 [NC,L]
